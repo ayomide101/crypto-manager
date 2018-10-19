@@ -1,0 +1,36 @@
+<div style="padding: 35px;">
+    <h3 class="font-body">User Profile <small>(Edit profile information)</small></h3>
+	<form id="profile-form" class="bottommargin" ng-submit="updateProfileData()">
+		<div class="col_three_fourth">
+			<label class="font-body capitalize" for="profile-company-name">Company Name:</label>
+			<input type="text" id="profile-company-name" name="profile-company-name" ng-model="profile.companyName" class="sm-form-control required" required/>
+		</div>
+		<div class="col_three_fourth">
+			<label class="font-body capitalize" for="profile-company-type">Industry:</label>
+			<input type="text" id="profile-company-type" name="profile-company-type" ng-model="profile.companyDepartment" class="sm-form-control required" required/>
+		</div>
+		<div class="col_three_fourth">
+			<label class="font-body capitalize" for="profile-company-type">Email:</label>
+			<input type="text" id="profile-email" name="profile-email" ng-model="profile.email" class="sm-form-control required" required/>
+		</div>
+		<div class="col_three_fourth">
+			<label class="font-body capitalize" for="profile-fullname">Primary Contact <small>(Name)</small>:</label>
+			<input type="text" id="profile-fullname" name="profile-fullname" ng-model="profile.name" class="sm-form-control required" required/>
+		</div>
+		<div class="col_three_fourth">
+			<label class="font-body capitalize" for="profile-phonenumber">Primary Contact <small>(Phone number)</small>:</label>
+			<input type="tel" id="profile-phonenumber" name="profile-phonenumber" ng-model="profile.phonenumber" class="sm-form-control required" required/>
+		</div>
+		<div class="col_three_fourth">
+			<label class="font-body capitalize" for="profile-fullname2">Secondary Contact <small>(Name)</small>:</label>
+			<input type="text" id="profile-fullname2" name="profile-fullname2" ng-model="profile.extraData.secondary_name" class="sm-form-control required" required/>
+		</div>
+		<div class="col_three_fourth">
+			<label class="font-body capitalize" for="profile-phonenumber2">Secondary Contact <small>(Phone number)</small>:</label>
+			<input type="tel" id="profile-phonenumber2" name="profile-phonenumber2" ng-model="profile.extraData.secondary_phonenumber" class="sm-form-control required" required/>
+		</div>
+		<div class="col_three_fourth text-right bottommargin">
+			<button class="button button-rounded nomargin" id="profile-submit" name="profile-submit" value="update" ng-disabled="disableButton">Save Changes</button>
+		</div>
+	</form>
+</div>

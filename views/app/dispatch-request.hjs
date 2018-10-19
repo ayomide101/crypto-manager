@@ -1,0 +1,103 @@
+<div style="padding: 35px;">
+    <h3 class="font-body">Dispatch <small>(Pick up &amp; Drop off)</small></h3>
+    <h5 class="price-estimate">Total Price Estimate: <span ng-bind-html="dispatch.costEstimate"></span></h5>
+    <form name="requestForm" class="nobottommargin" ng-submit="makeRequest()">
+        <div ng-show="notification.show">
+            <div id="meassge-container" class="alert alert-success">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                {[{ notification.message }]}
+            </div>
+        </div>
+
+        <div class="col_one_third">
+            <label for="dispatch-pickup">Pick-up Address <small>*</small></label>
+            <input type="text" id="dispatch-pickup" name="dispatch-pickup" ng-model="dispatch.pickup" class="sm-form-control required"/>
+        </div>
+        <div class="col_one_third">
+            <label for="dispatch-pickup-name">Pick-up Full Name <small>*</small></label>
+            <input type="text" id="dispatch-pickup-name" placeholder="Firstname Surname" name="dispatch-pickup-name" ng-model="dispatch.pickupName" class="required sm-form-control" required/>
+        </div>
+        <div class="col_one_third col_last">
+            <label for="dispatch-pickup-number">Pick-up Tel. Number<small>*</small></label>
+            <input type="tel" id="dispatch-pickup-number" placeholder="08081234567, +2348081234567" name="dispatch-pickup-number" ng-model="dispatch.pickupNumber" class="required sm-form-control" required/>
+        </div>
+
+        <div class="divider divider-center notopmargin" style="margin-bottom: 20px;"><i class="icon-pencil" style="color: #aaaaaa;"></i></div>
+
+        <div class="item-row" ng-repeat="request in dispatch.requests">
+            <div class="request-divider line line-sm notopmargin" style="border-top: 2px solid #aaa;" ng-show="($index > 0)"></div>
+            <div class="col_one_fourth">
+                <label for="request-dropoff-{[{ $index }]}">Drop-off Address <small>*</small></label>
+                <input type="text" id="request-dropoff-{[{ $index }]}" name="request-dropoff" ng-model="request.dropoff" class="required email sm-form-control" />
+            </div>
+            <div class="select-picker col_one_fourth">
+                <label for="request-size-{[{ $index }]}">Can Fit  <small>*</small></label>
+                <select id="request-size-{[{ $index }]}" name="request-size" class="sm-form-control selectpicker" ng-model="request.size">
+                    <option value="">-- Select One --</option>
+                    <option value="bag">In a Bag</option>
+                    <option value="bike">On a Bike</option>
+                    <option value="car">In a Car</option>
+                </select>
+            </div>
+            <div class="col_one_fourth">
+                <label for="dispatch-recipient-name-{[{ $index }]}">Recipient's Full Name <small>*</small></label>
+                <input type="text" id="request-recipient-name-{[{ $index }]}" placeholder="Firstname Surname" name="request-recipient-name" ng-model="request.recipientName" class="required sm-form-control" required/>
+            </div>
+            <div class="col_one_fourth col_last">
+                <label for="request-recipient-number-{[{ $index }]}">Recipient's Tel. Number<small>*</small></label>
+                <input type="tel" id="request-recipient-number-{[{ $index }]}" placeholder="08081234567, +2348081234567" name="request-recipient-number" ng-model="request.recipientNumber" class="required sm-form-control" required/>
+            </div>
+
+            <div class="clear"></div>
+
+            <div class="col_full">
+                <label for="request-description-{[{ $index }]}">Instructions &amp; Description <small>*</small></label>
+                <textarea class="required sm-form-control" id="request-description-{[{ $index }]}" style="max-width: 100%;" name="request-description" ng-model="request.description" rows="3" placeholder="Enter more details, instructions and descriptions here." required></textarea>
+            </div>
+            <div class="col_two_third">
+                <label>Set Request <small> For a Later Time</small> <input id="defer-switch" type="checkbox" bootstrap-switch class="bt-switch" data-size="mini" data-on-text="Yes" data-off-text="No" ng-model="dispatch.defer.enabled"></label>
+                <div>
+                    <div class="input-group date-picker" style="margin-right: 2%;">
+                        <input type="text" id="request-defer-date-{[{ $index }]}" name="request-defer-date" ng-model="request.defer.date" class="sm-form-control defer-date" placeholder="DD/MM/YYYY" ng-disabled="!request.defer.enabled"/>
+                        <span class="input-group-addon" style="border-radius: 0;"><i class="icon-calendar2"></i></span>
+                    </div>
+                    <div class="input-group time-picker" style="margin-left: 2%;">
+                        <input type="text" id="request-defer-time-{[{ $index }]}" name="request-defer-time" ng-model="request.defer.time" class="sm-form-control defer-time" placeholder="00:00 AM/PM" ng-disabled="!request.defer.enabled"/>
+                        <span class="input-group-addon" style="border-radius: 0;"><i class="icon-clock"></i></span>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+            <div class="col_one_third col_last">
+                <label for="dispatch-estimate-value-{[{ $index }]}">Estimated Value of Item(s) <small>*</small></label>
+                <div class="input-group">
+                    <span class="input-group-addon" style="border-radius: 0;">&#8358;</span>
+                    <input type="number" id="dispatch-estimate-value-{[{ $index }]}" name="dispatch-estimate-value" ng-model="request.estimateValue" class="sm-form-control"  required/>
+                    <span class="input-group-addon" style="border-radius: 0;">.00</span>
+                </div>
+            </div>
+
+            <div class="clear"></div>
+
+            <div class="col_one_third">
+                <a class="button button-rounded button-reveal button-small button-red" ng-show="showRemoveButton" ng-click="removeRequest(request)"><i class="icon-line-cross"></i><span>Delete Request</span></a>
+            </div>
+            <div class="col_one_third text-center">
+                <h5 style="margin: 10px 0;">Price Estimate: <span ng-bind-html="request.costEstimate"></span></h5>
+            </div>
+            <div class="col_one_third text-right col_last">
+                <a class="button button-3d button-rounded button-small button-blue" ng-click="addRequest()" style="padding: 0 10px;"><i class="icon-line-plus"></i><span>Add Request</span></a>
+            </div>
+        </div>
+
+        <div class="divider divider-center nomargin"><i class="icon-circle" style="color: #aaaaaa;"></i></div>
+
+        <div class="clear"></div>
+
+        <div class="col_full nobottommargin text-right" style="margin-top: 30px;">
+            <button name="submit" type="submit" id="submit-button" tabindex="5" class="button button-3d nomargin" ng-disabled="disableSubmit">Make Request</button>
+        </div>
+
+        <div class="clear"></div>
+    </form>
+</div>

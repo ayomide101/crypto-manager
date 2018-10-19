@@ -1,0 +1,35 @@
+<div style="padding: 35px;">
+    <h3 class="font-body">App Settings <small>(and api keys)</small></h3>
+	<div class="col_three_fourth nomargin">
+		<div class="fancy-title title-border title-center" style="margin-bottom: 20px;"><h6>Business Profile / default pickup data</h6></div>
+	</div>
+	<form id="profile-form" class="nobottommargin" ng-submit="saveBusinessData()">
+		<div class="col_three_fourth">
+			<label class="font-body capitalize" for="business-address">Pick-up / Business Address:</label>
+			<input type="text" id="business-address" name="business-address" ng-model="business.address" class="sm-form-control required" required/>
+		</div>
+		<div class="col_three_fourth">
+			<label class="font-body capitalize" for="business-fullname">Full name:</label>
+			<input type="text" id="business-fullname" name="business-fullname" placeholder="Name to use for dispatch requests" ng-model="business.name" class="sm-form-control required" required/>
+		</div>
+		<div class="col_three_fourth">
+			<label class="font-body capitalize" for="business-phonenumber">Phone number:</label>
+			<input type="tel" id="business-phonenumber" name="business-phonenumber" placeholder="Contact number to use for dispatch requests" ng-model="business.phonenumber" class="sm-form-control required" required/>
+		</div>
+		<div class="col_three_fourth text-right">
+			<button class="button button-rounded nomargin" id="business-submit" name="business-submit" value="update" ng-disabled="disableButton">Save Changes</button>
+		</div>
+		<div class="clearfix"></div>
+	</form>
+	<div class="col_three_fourth nomargin">
+		<div class="fancy-title title-border title-center" style="margin-bottom: 20px;"><h6>API key(s)</h6></div>
+		<div class="col_full bottommargin-sm">
+			<label class="font-body capitalize" for="test-key">Test key:</label>
+			<input type="text" id="test-key" class="sm-form-control text-center" value="pk_test_jdfjrbvg38iu4ihfbv3g87gfbiw348fhc9djire3490" readonly/>
+		</div>
+		<div class="col_full">
+			<label class="font-body capitalize" for="live-key">Live Key:</label>
+			<input type="text" id="live-key" class="sm-form-control text-center" value="sk_live_jdfjrbvg38iu4ihfbv3g87gfbiw348fhc9djire3490" readonly/>
+		</div>
+	</div>
+</div>

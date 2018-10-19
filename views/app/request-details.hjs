@@ -1,0 +1,73 @@
+<div style="padding: 35px;">
+    {{#request}}
+	<h3 class="font-body">Request Details <small>(Order ID: {{ request.unique_id }})</small></h3>
+	<div class="col_full">
+        <h4 style="margin-bottom: 10px;">Contact &amp; Addresses <span style="font-weight: normal;color: #444;text-transform: lowercase;">({{ request.request_type }})</span></h4>
+        <h5 style="margin-bottom: 10px;">Pick-up: <span style="font-weight: normal;color: #444;">{{ request.pickup_address }}</span></h5>
+        <h5 style="margin-bottom: 10px;">Drop-off: <span style="font-weight: normal;color: #444;">{{ request.dropoff_address }}</span></h5>
+        <h5 style="margin-bottom: 10px;">Pickup/Recipient Info: <span style="font-weight: normal;color: #444;">{{ request.recipient_name }} {{#request.recipient_phonenumber}}({{ request.recipient_phonenumber }}){{/request.recipient_phonenumber}}</span></h5>
+    </div>
+    <div class="col_full bottommargin-sm">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <colgroup>
+                    <col class="col-xs-6">
+                    <col class="col-xs-2">
+                    <col class="col-xs-2">
+                    <col class="col-xs-2">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th class="text-center">Request Type</th>
+                        <th class="text-center">Can fit...</th>
+                        <th class="text-right">Estimated Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ request.description }}</td>
+                        <td class="text-center"><span style="text-transform: lowercase;">{{ request.request_type }} ({{ request.delivery_type }})</span></td>
+                        <td class="text-center">{{ request.size }}</td>
+                        <td class="text-right">&#8358;{{ request.value_of_item }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col_full text-right">
+        <h5 style="margin-bottom: 10px;">Payment Status: <span style="font-weight: normal;color: #444;text-transform: lowercase;">{{ request.payment_status }}</span></h5>
+        <!-- <h5 style="margin-bottom: 10px;">Delivery Status: <span style="font-weight: normal;color: #444;text-transform: lowercase;">{{ request.delivery_status }}</span></h5> -->
+        <h5 style="margin-bottom: 10px;">Request Status: <span style="font-weight: normal;color: #444;text-transform: lowercase;">{{ request.status }}</span></h5>
+        {{#promo}}
+        <h5 style="margin-bottom: 10px;">Promo: <span style="font-weight: normal;color: #444;">{{ request.promo }}</span></h5>
+        {{/promo}}
+        {{#request.totalDistance}}
+        <h5 style="margin-bottom: 10px;">Total Distance: <span style="font-weight: normal;color: #444;">{{ request.totalDistance }}</span></h5>
+        {{/request.totalDistance}}
+        <h5 style="margin-bottom: 10px;">Total Amount: <span style="font-weight: normal;color: #444;">&#8358;{{ request.totalAmount }}</span></h5>
+    </div>
+	{{/request}}
+	{{#noHistory}}
+	<div class="col_full topmargin">
+        <div class="feature-box fbox-center fbox-light fbox-plain">
+            <div class="fbox-icon">
+                <a href="#"><i class="icon-warning-sign"></i></a>
+            </div>
+            <h3>Not Available</h3>
+            <p>Request details not available at this time, try again later.</p>
+        </div>
+    </div>
+    {{/noHistory}}
+    {{#notLoggedIn}}
+    <div class="col_full topmargin">
+        <div class="feature-box fbox-center fbox-light fbox-plain">
+            <div class="fbox-icon">
+                <a href="#"><i class="icon-warning-sign"></i></a>
+            </div>
+            <h3>Not Logged In</h3>
+            <p>Login is required to view this information.</p>
+        </div>
+    </div>
+    {{/notLoggedIn}}
+</div>

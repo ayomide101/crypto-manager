@@ -1,0 +1,27 @@
+{
+	"base_url": "https://business.cryptomanager.com/",
+    "maintenance_mode": false,
+	"payment": {
+		"public_key": "pk_live_a068db14582b139a71642766c9c9941ea1e3caf3"
+	},
+	"http.request": {
+		"host": "api.cryptomanager.com",
+		"port": 80,
+		"path": "/api",
+		"secure": true
+	},
+	"db.config": {
+		"host": "127.0.0.1",
+		"port": 3306,
+		"database" : "cryptomanager",
+		"user": "root",
+		"password": "mysql"
+	},
+	"session.security": {
+		"name": "sessid",
+		"secret": "1nUDlHmtUlQ8qENropilEkf8uMA3Xuvy",
+		"resave": false,
+		"saveUninitialized": true,
+		"session_duration": 604800000
+	}
+}

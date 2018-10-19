@@ -1,0 +1,111 @@
+<div id="payment-content" class="payment-section">
+    <h3 class="font-body" style="margin-bottom: 25px;"><button class="i-bordered i-circled i-medium divcenter icon-arrow-left2" style="margin-right: 20px !important; line-height:30px !important;" ng-click="hidePaymentModal()"></button>Make Payment</h3>
+    <div id="paymentContainer"></div>
+</div>
+<div id="request-summary" style="padding: 35px;">
+	<h3 class="font-body" style="margin-bottom: 25px;"><back-button></back-button>Request Summary <small>({[{ summaryTitle }]})</small></h3>
+	<form class="nobottommargin" ng-submit="makePayment()">
+        <div class="col_half">
+            <div class="col_full" style="margin-bottom: 15px;">
+                <label>Pick-up Address <small>*</small></label>
+                <div>{[{ summary.pickup }]}</div>
+            </div>
+            <div class="col_full" style="margin-bottom: 15px;">
+                <label>Drop-off Address <small>*</small></label>
+                <div>{[{ summary.dropoff }]}</div>
+            </div>
+            <div class="col_half" style="margin-bottom: 15px;" ng-show="showPickups">
+                <label>Pick-up Full Name</label>
+                <div>{[{ summary.pickupName }]}</div>
+            </div>
+            <div class="col_half col_last" style="margin-bottom: 15px;" ng-show="showPickups">
+                <label>Pick-up Number</label>
+                <div>{[{ summary.pickupNumber }]}</div>
+            </div>
+            <div class="clear"></div>
+            <div class="col_half" style="margin-bottom: 15px;" ng-show="showDropoffs">
+                <label>Recipient's Full Name</label>
+                <div>{[{ summary.recipientName }]}</div>
+            </div>
+            <div class="col_half col_last" style="margin-bottom: 15px;" ng-show="showDropoffs">
+                <label>Recipient's Number</label>
+                <div>{[{ summary.recipientNumber }]}</div>
+            </div>
+            <div class="clear"></div>
+            <div class="col_full" style="margin-bottom: 15px;">
+                <label>Size</label>
+                <div>Can fit {[{ (summary.size.toLowerCase().includes("bike") ? "on" : "in") }]} a {[{ summary.size }]}</div>
+            </div>
+
+            <div class="col_full">
+                <label>Instructions & Description</label>
+                <div ng-bind-html="fullDescription"></div>
+            </div>
+		</div>
+
+        <div class="col_half col_last">
+            <div class="col_half nobottommargin">
+                <label>Transaction Ref.</label>
+            </div>
+
+            <div class="col_half nobottommargin col_last text-right">
+                <div>{[{request.orderId}]}</div>
+            </div>
+
+            <div class="clear"></div>
+
+            <div class="col_half nobottommargin">
+                <label>Estimated Value</label>
+            </div>
+
+            <div class="col_half nobottommargin col_last text-right">
+                <div>&#8358;{[{request.estimateValue}]}</div>
+            </div>
+
+            <div class="clear"></div>
+
+            <div class="col_half nobottommargin">
+                <label>Service Fee</label>
+            </div>
+
+            <div class="col_half nobottommargin col_last text-right">
+                <div>&#8358;{[{request.cost}]}</div>
+            </div>
+
+            <div class="divider divider-center notopmargin" style="margin-bottom: 10px;"><i class="icon-calculator"></i></div>
+
+            <div class="col_half nobottommargin">
+                <label>Total Cost</label>
+            </div>
+
+            <div class="col_half nobottommargin col_last text-right">
+                <div>&#8358;{[{request.totalCost}]}</div>
+            </div>
+
+            <div class="divider divider-center" style="margin-bottom: 10px;" ng-show="summary.defer.enabled"><i class="icon-clock"></i></div>
+
+		    <div class="col_full" ng-show="summary.defer.enabled">
+                <label>Request would be initiated on</label>
+                {{! <div>11<sup>th</sup> January, 2017. 12:00PM</div> }}
+                <div>{[{ summary.defer.date }]}, {[{ summary.defer.time }]}</div>
+            </div>
+
+            <div class="line notopmargin" style="margin-bottom: 20px;"></div>
+
+            <div class="col_full nobottommargin text-right" ng-show="showExpressOptions">
+                <label for="express-payment" class="checkbox-style-3-label pull-left noleftmargin no-default" style="font-weight: 600;">Use express payment method</label>
+                <input id="express-payment" type="checkbox" bootstrap-switch class="bt-switch" data-size="mini" data-on-text="Yes" data-off-text="No" ng-model="paymentParams.use_express">
+            </div>
+            <div ng-repeat="method in paymentParams.methods" ng-show="paymentParams.use_express">
+                <input id="method-{[{ method.no }]}" class="radio-style" name="radio-group" type="radio" ng-model="paymentParams.preferred" value="{[{ method.id }]}">
+                <label for="method-{[{ method.no }]}" class="radio-style-2-label radio-small" style="width: 100%">{[{ method.text }]} <span style="float: right;">{[{ method.number }]}</span></label>
+            </div>
+        </div>
+		<div class="clear"></div>
+
+		<div class="col_full col_last text-right nobottommargin">
+			<button name="submit" type="submit" id="submit-button" tabindex="5" class="button button-3d nomargin" style="width: 100%;">Make Payment</button>
+		</div>
+		<div class="clear"></div>
+	</form>
+</div>

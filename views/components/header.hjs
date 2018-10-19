@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<meta name="author" content="cryptomanager Dev Team" />
+	<!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <![endif]-->
+
+	{{! Stylesheets
+	============================================= }}
+	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,400italic,600,700|Raleway:300,400,500,600,700|Crete+Round:400italic" rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" href="{{ base_url }}css/bootstrap.min.css" type="text/css" />
+	<link rel="stylesheet" href="{{ base_url }}style.min.css" type="text/css" />
+	<link rel="stylesheet" href="{{ base_url }}css/styles.min.css" type="text/css" />
+
+    {{! Bootstrap Switch CSS ,Bootstrap Select CSS, Radio Checkbox Plugin, Date & Time Picker CSS }}
+	<link rel="stylesheet" href="{{ base_url }}css/components/styles.min.css" type="text/css" />
+
+	<link rel="stylesheet" href="{{ base_url }}css/responsive.min.css" type="text/css" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+	{{! Document Title
+	============================================= }}
+	<title>Cryptomanager - {{ title }}</title>
+
+	{{#base}}
+	<base href="{{ base }}">
+	{{/base}}
+
+	<style>
+	    .button:disabled{opacity:.65!important}.vertical-middle{top:45%!important;padding:0 15px}.vertical-alignment-helper{display:table;height:100%;margin:auto;pointer-events:none}.vertical-align-center{display:table-cell;vertical-align:middle;pointer-events:none}.modal-content{width:inherit;height:inherit;margin:0 auto;pointer-events:all}.price-estimate{position:absolute;top:42px;right:50px}.bootstrap-switch-id-defer-switch{margin-left:10px;margin-top:-3px}.date-picker,.time-picker{max-width:48%;float:left}.select-picker .sm-form-control{padding:0}.select-picker .btn{border:none;border-radius:0;padding:8px 14px}.dropdown-menu{border-radius:0}.pac-container{z-index:2040}input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}@media (max-width:767px){.date-picker,.time-picker{max-width:100%;margin-left:0!important;margin-right:0!important}.price-estimate{top:86px;right:auto}.mfp-close{color:#bbb;right:10px;top:10px}}.portfolio-item:hover .portfolio-overlay,.portfolio-overlay{opacity:1!important}.dark #header-wrap:not(.not-dark) #primary-menu>ul>li>a:hover{color:#267df4}.i-medium{width:40px!important;height:40px!important;line-height:38px!important}.no-default:before{display:none!important}.payment-section{position:absolute;width:100%;height:420px;margin:-15px 0 0 -15px;padding:50px;z-index:1046;background:#fff}.divider:after,.divider:before{border-top: 1px solid #ccc !important;}
+	</style>
+	<noscript><style>#header-wrap, #header-wrap .container{background-color: #ffffff;}</style></noscript>
+</head>
+
+<body class="stretched side-header{{#no_transition}} no-transition{{/no_transition}}">
+	{{! Document Wrapper
+	============================================= }}
+	<div id="wrapper" class="clearfix">
+		{{! Header
+		============================================= }}
+		<header id="header" {{{ header_property }}}>
+			<div id="header-wrap">
+                <noscript>
+                    <div class="alert alert-warning center" style="border-radius: 0;">
+                        <i class="icon-warning-sign"></i><strong>JavaScript</strong> is not currently enabled on your browser, some features may not work if <strong>JavaScript</strong> is disabled. <i class="icon-warning-sign"></i>
+                    </div>
+                </noscript>
+				<div class="container clearfix">
+				{{#default_menu}}
+					<div id="primary-menu-trigger"><i class="icon-reorder"></i></div>
+				{{/default_menu}}
+					{{! Logo
+					============================================= }}
+					<div id="logo" {{{ logo_property }}}>
+						<a href="{{ base_url }}" class="standard-logo" data-dark-logo="{{ base_url }}images/{{ logo_dark }}.png"><img {{{ logo_property }}} src="{{ base_url }}images/{{ logo }}.png" alt="cryptomanager Business Logo"></a>
+						<a href="{{ base_url }}" class="retina-logo" data-dark-logo="{{ base_url }}images/{{ logo_dark }}@2x.png"><img src="{{ base_url }}images/{{ logo }}@2x.png" alt="cryptomanager Business Logo"></a>
+					</div>{{! #logo end }}
+				{{#default_menu}}
+					{{! Primary Navigation
+					============================================= }}
+					<nav id="primary-menu">
+						<ul>
+							<li><a href="#/dispatch-request"><div>Dispatch</div><i class="icon-angle-right" style="position:absolute;top:1px;right:0"></i></a></li>
+                            <li><a href="#/request-history"><div>History</div><i class="icon-angle-right" style="position:absolute;top:1px;right:0"></i></a></li>
+                            <li><a href="#/profile"><div>Profile</div><i class="icon-angle-right" style="position:absolute;top:1px;right:0"></i></a></li>
+                            <li><a href="#/app-settings"><div>Settings</div><i class="icon-angle-right" style="position:absolute;top:1px;right:0"></i></a></li>
+						</ul>
+					</nav>{{! #primary-menu end }}
+
+					<div class="clearfix visible-md visible-lg">
+                        <a href="https://www.facebook.com/cryptomanager" class="social-icon si-small si-borderless si-facebook">
+                            <i class="icon-facebook"></i>
+                            <i class="icon-facebook"></i>
+                        </a>
+                        <a href="https://twitter.com/cryptomanager" class="social-icon si-small si-borderless si-twitter">
+                            <i class="icon-twitter"></i>
+                            <i class="icon-twitter"></i>
+                        </a>
+                        <a href="https://instagram.com/cryptomanager/" class="social-icon si-small si-borderless si-instagram">
+                            <i class="icon-instagram"></i>
+                            <i class="icon-instagram"></i>
+                        </a>
+                        <a href="https://www.youtube.com/channel/UCfMQyGrJ2h_5b5YKmSuMgWg" class="social-icon si-small si-borderless si-youtube">
+                            <i class="icon-youtube"></i>
+                            <i class="icon-youtube"></i>
+                        </a>
+                    </div>
+				{{/default_menu}}
+				</div>
+			</div>
+		</header>{{! #header end }}

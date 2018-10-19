@@ -1,0 +1,59 @@
+<div style="padding: 35px;">
+	<h3 class="font-body">Request History <small>(All requests)</small></h3>
+	<img src="./images/icons/avatar.jpg" class="alignleft img-circle img-thumbnail notopmargin nobottommargin" alt="Avatar" style="max-width: 84px;">
+	<div class="heading-block noborder">
+		<h4 id="account-name">{[{ profile.name }]}</h4>
+		<span id="account-email" style="margin-top: -5px;">{[{ profile.email }]}</span>
+		<span id="account-phonenumber" style="margin-top: 0;">{[{ profile.phonenumber }]}</span>
+	</div>
+	<div class="clear"></div>
+	<div class="row clearfix">
+		<div class="col-md-9">
+			<div class="tabs tabs-alt clearfix" id="history-tabs">
+				<ul class="tab-nav clearfix">
+					<li><a href="#tab-history"><i class="icon-files"></i> Transaction History</a></li>
+				</ul>
+				<div class="tab-container">
+					<div class="tab-content clearfix" id="tab-history">
+						<p class="">Find below a list of all your previous, pending and on going requests.</p>
+						<div class="table-responsive">
+							<table class="table table-bordered table-striped">
+								<colgroup>
+									<col class="col-xs-2" style="width: 15%;">
+									<col class="col-xs-7">
+									<col class="col-xs-1" style="width: 9%;">
+								</colgroup>
+								<thead>
+									<tr>
+										<th>Time</th>
+										<th>Summary</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-show="(requests.length < 1)">
+										<td colspan="3">
+											<div class="text-center">You're yet to make a request, <a href="#" ng-click="makeRequest()">click here</a> to get started.</div>
+										</td>
+									</tr>
+									<tr ng-repeat="request in requests">
+										<td style="vertical-align: middle;"><code>{[{ request.date }]}</code></td>
+										<td>
+											{[{ request.request_type }]} <span style="text-transform: lowercase;">({[{ request.delivery_type }]})</span><br>
+											<span ng-show="(request.pickup_address)">Pick-up: </span>{[{ request.pickup_address }]}<br>
+											<span ng-show="(request.dropoff_address)">Drop-off: </span>{[{ request.dropoff_address }]}<br>
+											Status: <span style="text-transform: lowercase;">{[{ request.status }]}</span>
+										</td>
+										<td style="vertical-align: middle;"><a class="order-details" href="#" ng-click="getOrderRequestDetails(request.unique_id)">view details</a></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="line visible-xs-block" style="margin: 20px 0 60px;"></div>

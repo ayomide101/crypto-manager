@@ -1,0 +1,51 @@
+{{> header }}
+		{{! Page Title
+		============================================= }}
+		<section id="page-title" class="page-title-mini">
+			<div class="container clearfix">
+				<h1>{{ message }}</h1>
+				<ol class="breadcrumb">
+					<li><a href="{{ base_url }}">Home</a></li>
+					<li class="active">{{ error.status }}</li>
+				</ol>
+			</div>
+		</section>{{! #page-title end }}
+		{{! Content
+		============================================= }}
+		<section id="content">
+			<div class="content-wrap">
+				<div class="container clearfix">
+					<div class="col_half nobottommargin">
+						<div class="error404 center">{{ error.status }}</div>
+					</div>
+					<div class="col_half nobottommargin col_last">
+						<div class="heading-block nobottomborder">
+							<h4>Ooopps.! The Page you were looking for, couldn't be found.</h4>
+							<span>Try browsing through the links below:</span>
+						</div>
+						<div class="col_one_third widget_links nobottommargin">
+							<ul>
+								<li><a href="{{ base_url }}">Home</a></li>
+								<li><a href="{{ base_url }}about">About cryptomanager</a></li>
+								<li><a href="{{ base_url }}how-it-works">How it Works</a></li>
+							</ul>
+						</div>
+						<div class="col_one_third widget_links nobottommargin">
+							<ul>
+								<li><a href="{{ base_url }}become-a-buddy">Become a Buddy</a></li>
+								<li><a href="{{ base_url }}careers">Careers</a></li>
+								<li><a href="#">Blog</a></li>
+							</ul>
+						</div>
+						<div class="col_one_third widget_links nobottommargin col_last">
+							<ul>
+								{{! <li><a href="#">Downloads</a></li> }}
+								<li><a href="{{ base_url }}developers">Developers</a></li>
+								<li><a href="{{ base_url }}faqs">FAQs</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>{{! #content end }}
+{{> footer }}
