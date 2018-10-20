@@ -11,4 +11,5 @@ I have included the `cryptomanager.sql` file so you can quickly setup your datab
 
 ##START SERVER
 `npm install` to install all dependencies
+<br/>
 `npm start` to start the server
