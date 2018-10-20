@@ -1,18 +1,28 @@
 import express from "express";
-
 import functions from "../modules/functions";
-
 import User from "../modules/user-account";
-
-import orderRequest from "../modules/order-request";
 import * as fs from "fs";
+import Wallet from "../modules/wallet";
 
 const jwt = require('express-jwt');
+
+Array.prototype.isEmpty = function () {
+    return this.length <= 0;
+};
 
 
 const router = express.Router();
 const base_url = functions.getConfig('base_url');
 const user = new User();
+const wallet = new Wallet();
+
+const log = function(message, error) {
+    if (error) {
+        console.error(message);
+    } else {
+        console.log(message);
+    }
+};
 
 /**
  * Checks if JWT token has been revoked
@@ -44,7 +54,7 @@ router.use(jwt(
 
 
 router.get('/', function (req, res) {
-    console.log(req.auth);
+    log(req.auth);
     res.send('Hello');
 });
 
@@ -55,7 +65,7 @@ router.get('/user/profile', function (req, res) {
         .then(function (response) {
             res.send(response);
         }, function (error) {
-            console.log(error);
+            log(error, true);
             res.send(error);
         });
 });
@@ -73,22 +83,72 @@ router.post('/user/update/info', function (req, res) {
         .then(function (response) {
             res.send(response)
         }, function (err) {
-            console.log(err);
+            log(err, true);
             res.send(err)
         });
 });
 
 router.post('/user/update/password', function (req, res) {
-    console.log(`User trying to update`);
+    log(`User trying to update`);
     const oldPassword = req.bodyString("oldPassword");
     const newPassword = req.bodyString("newPassword");
 
     user.updatePassword(req.auth.uid, oldPassword, newPassword)
         .then(function (response) {
-            console.log(response);
+            log(response);
             res.send(response);
         }, function (error) {
-            console.log(error);
+            log(error, true);
+            res.send(error);
+        });
+});
+
+/**
+ * Create friend
+ */
+router.post('/wallet/createFriend', function (req, res) {
+    log(`Create friend`);
+    wallet
+        .createFriend(req.auth.uid, req.bodyString('name'), req.bodyString('wallet'), req.bodyString('wallet_address'))
+        .then(function (response) {
+            log(response);
+            res.send(response);
+        }, function (error) {
+            log(error, true);
+            res.send(error);
+        });
+});
+
+/**
+ * Delete friend
+ */
+router.post('/wallet/deleteFriend', function (req, res) {
+    log(`Delete friend`);
+    wallet
+        .deleteFriend(req.auth.uid, req.bodyString('frnid'))
+        .then(function (response) {
+            log(response);
+            res.send(response);
+        }, function (error) {
+            log(error, true);
+            res.send(error);
+        });
+});
+
+
+/**
+ * Get friends
+ */
+router.get('/wallet/friends', function (req, res) {
+    log('Get friends');
+
+    wallet
+        .getFriends(req.auth.uid)
+        .then(function (response) {
+            log(response);
+            res.send(response);
+        }, function (error) {
+            log(error, true);
             res.send(error);
         });
 });

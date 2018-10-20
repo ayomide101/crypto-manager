@@ -29,6 +29,18 @@ export default class Database {
 
     }
 
+    /**
+     * SELECT FROM TABLE
+     * @param table
+     * @param params
+     * @param keyword
+     * @param operator
+     * @param orderby
+     * @param mode
+     * @param limit
+     * @param callback
+     * @returns {Promise<any>}
+     */
     select(table, params, keyword, operator, orderby, mode, limit, callback) {
         switch (arguments.length) {
             case 1:
@@ -141,7 +153,6 @@ export default class Database {
                     console.log(err);
                     reject(Error.NOT_CREATED);
                 } else {
-                    console.log(res);
                     resolve(res);
                 }
                 if (typeof callback === 'function') callback(err, res);
@@ -241,11 +252,15 @@ export default class Database {
         }
 
         var sql = 'DELETE FROM ' + table + ((suffix.trim() != '') ? ' WHERE ' + suffix : '');
-        return this.connection.query(sql, values, function (err, res) {
-            if (err) {
-                throw err;
-            }
-            if (typeof callback === 'function') callback(err, res);
+        return new Promise((resolve, reject) => {
+            this.connection.query(sql, values, function (err, res) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+                if (typeof callback === 'function') callback(err, res);
+            })
         });
     }
 

@@ -16,6 +16,9 @@ export default class Error {
     static INCORRECT_OTP = {...Error.FAIL, code: 211, message: "Incorrect OTP"};
     static OLD_PASSWORD = {...Error.FAIL, code: 212, message: "New password cannot be same old password"};
     static PASSWORD_UPDATED = {...Error.FAIL, code: 213, message: "Password not updated"};
+    static FRIEND_NOT_CREATED = {...Error.FAIL, code: 214, message: "Friend not created"};
+    static INVALID_WALLET_ADDRESS = {...Error.FAIL, code: 215, message: "Invalid wallet address"};
+    static FRIEND_NOT_DELETED = {...Error.FAIL, code: 216, message: "Friend not deleted"};
 
     /**
      * Attaches

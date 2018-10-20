@@ -15,10 +15,6 @@ totp.options = {crypto, step: 5 * 60};//Step is in seconds
 
 const secret = Functions.getConfig('session.security').secret;
 
-Array.prototype.isEmpty = function () {
-    return this.length <= 0;
-};
-
 export default class User {
 
     mailer = new Mailer();

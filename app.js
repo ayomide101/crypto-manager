@@ -1,4 +1,4 @@
-import crypto from "./modules/cryptocurr";
+import CryptoCore from "./modules/cryptoCore";
 import express from "express";
 import path from "path";
 import favicon from "serve-favicon";
@@ -13,9 +13,8 @@ import api from "./routes/api";
 import authorize from "./routes/authorize";
 import helmet from "helmet";
 import Functions from "./modules/functions";
-import * as fs from "fs";
 
-crypto.initCryptos();
+CryptoCore.initCryptos();
 
 const app = express();
 
