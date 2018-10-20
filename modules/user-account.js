@@ -456,8 +456,7 @@ export default class User {
 
                             const jwtToken = jwt.sign({
                                 uid: user.uid,
-                                type: user
-                            }, fs.readFileSync(Functions.getConfig('session.security').privatekey, 'utf8'), JWTSignOptions)
+                            }, fs.readFileSync(Functions.getConfig('session.security').privatekey, 'utf8'), JWTSignOptions);
                             console.log(`Signed JWT-Token`);
                             //Log token so it can be revoked later if necessary
                             return db
