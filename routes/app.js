@@ -1,8 +1,8 @@
+import Functions from "../modules/functions";
+
 var express = require('express');
 var router = express.Router();
-
-var functions = require('../modules/functions');
-var base_url = functions.getConfig('base_url');
+var base_url = Functions.getConfig('base_url');
 
 /* GET dispatch-request layout. */
 router.get('/dispatch-request', function(req, res) {

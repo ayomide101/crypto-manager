@@ -1,11 +1,20 @@
 export default class CryptoInterface {
 
-    static supported_cryptos = [];
+    static supported_cryptos = {};
 
     createWallet() {
 
     }
+
     sendTransaction() {
+
+    }
+
+    getBalance() {
+
+    }
+
+    static getName() {
 
     }
 
@@ -15,10 +24,16 @@ export default class CryptoInterface {
      */
     static addCrypto(path) {
         let cryptoClass = require(path);
-        if (cryptoClass.prototype instanceof CryptoInterface) {
-            this.supported_cryptos.push(path);
+        if (cryptoClass.default.prototype instanceof CryptoInterface) {
+            const name = cryptoClass.default.getName();
+            this.supported_cryptos[name] = path;
+            console.log(`CryptoInterface -> [${name}] loaded`);
         } else {
-            throw ""+path+" is not a instance of CryptoInterface";
+            throw `${path} is not a instance of CryptoInterface`;
         }
+    }
+
+    static getCrypto(name) {
+        return this.supported_cryptos[name];
     }
 }

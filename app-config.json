@@ -22,6 +22,21 @@
 		"secret": "1nUDlHmtUlQ8qENropilEkf8uMA3Xuvy",
 		"resave": false,
 		"saveUninitialized": true,
-		"session_duration": 2700000
+		"session_duration": 2700000,
+		"privatekey":"jwt.key",
+		"publickey":"jwt.key.pub"
+	},
+	"mail.config": {
+		"host": "smtp.zoho.com",
+		"port": 465,
+		"secure": true,
+		"auth": {
+			"user": "noreply@dropbuddies.com",
+			"pass": "PLkW%cMLl2vp"
+		}
+	},
+	"mailChimp": {
+		"key": "0e67055befc893972aeee21dbc53895e-us14",
+		"id": "d83f9fde4c"
 	}
 }
