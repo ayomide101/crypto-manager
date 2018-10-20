@@ -634,7 +634,7 @@ export default class User {
             .then(users => {
                 let user = users[0];
 
-                return Promise.resolve(User.sanitizeUser(user));
+                return Promise.resolve(Error.successError("User", User.sanitizeUser(user)));
             });
     }
 }
