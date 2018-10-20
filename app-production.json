@@ -2,7 +2,7 @@
 	"base_url": "https://business.cryptomanager.com/",
     "maintenance_mode": false,
 	"payment": {
-		"public_key": "pk_live_a068db14582b139a71642766c9c9941ea1e3caf3"
+		"public_key": ""
 	},
 	"http.request": {
 		"host": "api.cryptomanager.com",

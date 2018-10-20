@@ -2,7 +2,7 @@
 	"base_url": "http://localhost:8080/",
 	"maintenance_mode": false,
 	"payment": {
-		"public_key": "pk_test_936b7146ca8e01f4b1dc907f0c67986fbcc74d87"
+		"public_key": ""
 	},
 	"http.request": {
 		"host": "api.cryptomanager.com",
