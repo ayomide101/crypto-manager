@@ -14,6 +14,8 @@ export default class Error {
     static ACCOUNT_BLOCKED = {...Error.FAIL, code: 209, message: "Account blocked"};
     static LOGIN_FAILED = {...Error.FAIL, code: 210, message: "Login failed"};
     static INCORRECT_OTP = {...Error.FAIL, code: 211, message: "Incorrect OTP"};
+    static OLD_PASSWORD = {...Error.FAIL, code: 212, message: "New password cannot be same old password"};
+    static PASSWORD_UPDATED = {...Error.FAIL, code: 213, message: "Password not updated"};
 
     /**
      * Attaches

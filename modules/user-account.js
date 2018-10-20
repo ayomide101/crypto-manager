@@ -215,23 +215,65 @@ export default class User {
     updateInfo(uid, params) {
         const db = new Database();
 
-        //Remove sensitive data
-        delete params["passwordHash"];
-        delete params["salt"];
+        const errors = [];
+
+        if (!Functions.isNull(params["phonenumber"]) && !validator.isMobilePhone(params["phonenumber"], ['en-US', "en-GB", "en-NG"])) {
+            errors.push({phonenumber: "Phonenumber is invalid"})
+        }
+
+        if (Functions.isNull(params["name"])) {
+            delete params["name"];
+        }
+        if (Functions.isNull(params["email"])) {
+            delete params["email"];
+        }
+
+        if (!errors.isEmpty()) {
+            return Promise.reject(Error.errorResponse(Error.INVALID_DATA, errors));
+        }
+
+        params = User.sanitizeUser(params);
+
         delete params["created_on"];
         delete params["updated_on"];
         delete params["status"];
-        delete params["activation_code"];
-        delete params["hashToken"];
-        delete params["tokenSecret"];
 
         params["updated_on"] = new Date().toISOString();
 
-        return db
-            .update("users", {uid}, params)
-            .then(value => {
-                return Promise.resolve(Error.successError("Account updated"))
-            });
+        const doUpdate = function () {
+            return db
+                .update("users", {uid}, params)
+                .then(value => {
+                    return Promise.resolve(Error.successError("Account updated"))
+                });
+        };
+
+        if (!Functions.isNull("email")) {
+            console.log(`User wants to update email | Checking email already exists`);
+            return db.select("users", {
+                "email": params["email"]
+            }).then(users => {
+                if (users.length > 0) {
+                    console.log(`User already exist with this email`);
+                    return Promise.reject(Error.ACCOUNT_EXISTS);
+                } else {
+                    return doUpdate();
+                }
+            })
+        } else {
+            return doUpdate();
+        }
+    }
+
+    static sanitizeUser(user) {
+        //Remove sensitive data
+        delete user["passwordHash"];
+        delete user["salt"];
+        delete user["activation_code"];
+        delete user["hashToken"];
+        delete user["tokenSecret"];
+
+        return user
     }
 
     requestPasswordReset(email, successCallback, errorCallback) {
@@ -252,22 +294,83 @@ export default class User {
         });
     }
 
-    updatePassword(secureToken, params, successCallback, errorCallback) {
-        var request = new functions.httpRequest();
-        request.addHeader("Authorization", "Bearer " + secureToken);
-        request.addOption("path", "/api/accounts/user/password/change");
+    /**
+     * UPDATE PASSWORD
+     * @param uid
+     * @param oldPassword
+     * @param newPassword
+     * @returns {Promise<any>}
+     */
+    updatePassword(uid, oldPassword, newPassword) {
+        const self = this;
+        return new Promise((resolve, reject) => {
+            if (oldPassword === newPassword) {
+                reject(Error.OLD_PASSWORD);
+            } else {
+                const dbInterface = new Database();
+                //Retrieve user account
+                dbInterface.select("users", {uid}, function (err, res) {
+                    const now = (new Date()).getTime();
+                    if (res.length > 0) {
 
-        request.post(params, function (res) {
-            switch (res.error) {
-                case 200:
-                    if (typeof successCallback === 'function') successCallback(res);
-                    break;
-                default:
-                    if (typeof errorCallback === 'function') errorCallback(res);
-                    break;
+                        const user = res[0];
+                        const unknownPassword = Functions.sha512(oldPassword, user.salt);
+
+                        //If hash generated matches - correct password
+                        if (unknownPassword.passwordHash === user.passwordHash) {
+                            console.log('Password match');
+
+                            //Generate new password
+                            //hash password
+                            const {salt, passwordHash} = Functions.saltHashPassword(newPassword);
+
+                            const data = {
+                                salt,
+                                passwordHash,
+                                updated_on: new Date().toISOString(),
+                            };
+                            //Create user account
+                            console.log(`Updating user -> {uid:${uid}`);
+                            return dbInterface
+                                .update("users", {uid}, data)
+                                .then(value => {
+                                    //Send EMail
+                                    const from = `Support <${self.mailer.options.auth.user}>`;
+                                    const mailSubject = "Password Changed";
+                                    const mailBody = `
+                                    Dear ${user.name},<br/>
+                                    Your account password just got changed<br/>
+                                    If you didn't authorize this change, please contact our support team.
+                                    Best Regards,<br/>
+                                    Manager, CryptoManager`;
+
+                                    console.log('Sending registration email');
+                                    self.mailer.sendMail(from, user.email, mailSubject, mailBody, [], function (resp) {
+                                        console.log('Mail status: %s', JSON.stringify(resp));
+                                        if (resp.error) {
+                                            console.log(resp.error);
+                                        }
+                                        console.log('Mail sent');
+                                    });
+                                    resolve(Error.successError("Password updated"));
+                                })
+                                .catch(reason => {
+                                    if (reason === Error.NOT_UPDATED) {
+                                        reject(Error.PASSWORD_UPDATED);
+                                    } else {
+                                        reject(reason);
+                                    }
+                                });
+                        } else {
+                            console.error(`Incorrect password provided for -> ${uid}`);
+                            reject(Error.ACCOUNT_INCORRECT_PASSWORD)
+                        }
+                    } else {
+                        console.error(`User account not found -> ${uid}`);
+                        reject(Error.ACCOUNT_NOT_FOUND);
+                    }
+                });
             }
-        }, function (err) {
-            if (typeof errorCallback === 'function') errorCallback(err);
         });
     }
 
@@ -318,7 +421,7 @@ export default class User {
                         };
                         //Create user account
                         console.log(`Creating user -> {email:${email}`);
-                        return dbInterface.insert("users", data)
+                        return dbInterface.insert("users", data);
                     }
                 })
                 .then(res => {
@@ -522,6 +625,16 @@ export default class User {
             })
             .finally(() => {
                 db.close();
+            });
+    }
+
+    getDetails(uid) {
+        const db = new Database();
+        return db.select("users", {uid})
+            .then(users => {
+                let user = users[0];
+
+                return Promise.resolve(User.sanitizeUser(user));
             });
     }
 }
