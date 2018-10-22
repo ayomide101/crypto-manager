@@ -35,6 +35,13 @@
 			"pass": "PLkW%cMLl2vp"
 		}
 	},
+	"crypto-config": {
+		"live" : false,
+		"bitcoin": {
+			"apiKey":"2982ad54afbf1837e2e18d704a732c27d22549f1",
+			"apiSecret":"53dbd5fcb8bfb3498a0a4f8b8ab6c352755bf4e7"
+		}
+	},
 	"mailChimp": {
 		"key": "0e67055befc893972aeee21dbc53895e-us14",
 		"id": "d83f9fde4c"

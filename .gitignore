@@ -19,6 +19,8 @@
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
 
+*-sensitive.*
+
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
@@ -135,3 +137,12 @@ typings/
 # Serverless directories
 .serverless
 
+.DS_Store
+.idea/dropbuddies-business-web.iml
+.idea/jsLibraryMappings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/sqldialects.xml
+.idea/vcs.xml
+*.key*
+views/mail-templates/

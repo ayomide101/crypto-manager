@@ -1,7 +1,23 @@
 export default class CryptoInterface {
 
-    createWallet() {
+    /**
+     * Setup block chain
+     * Will be called immediately after crypto is instantiated
+     */
+    setup() {
+
+    }
+
+    /**
+     *
+     * @returns Promise
+     */
+    createWallet(data) {
         return null;
+    }
+
+    createWalletAddress(data) {
+
     }
 
     sendTransaction() {
@@ -16,7 +32,25 @@ export default class CryptoInterface {
         return true;
     }
 
+    getTransactions() {
+
+    }
+
     static getName() {
         return null;
+    }
+
+    log(message, error) {
+        if (error) {
+            console.error(message);
+        } else {
+            console.log(message);
+        }
+
+        return message;
+    }
+
+    error(message) {
+        return this.log(message, true);
     }
 }

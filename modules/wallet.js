@@ -7,39 +7,40 @@ import CryptoCore from "./cryptoCore";
 export default class Wallet {
 
     static friends_table = "friends";
+    static wallets_table = "";
 
     /**
-     * Balance from one wallet
+     * Balance from one crypto
      * @param uid
-     * @param wallet
+     * @param crypto
      */
-    getBalance(uid, wallet) {
+    getBalance(uid, crypto) {
 
     }
 
     /**
-     * Balance from all wallets
+     * Balance from all cryptos
      * @param uid
      */
     getBalances(uid){}
 
     /**
-     * Add amount to wallet
+     * Add amount to crypto
      * @param uid
-     * @param wallet
+     * @param crypto
      * @param amount
      */
-    loadWallet(uid, wallet, amount) {}
+    loadWallet(uid, crypto, amount) {}
 
     /**
-     * Send crypto to recipient wallet
+     * Send crypto to recipient crypto
      *
      * @param uid
-     * @param wallet
-     * @param wallet_address
+     * @param crypto
+     * @param crypto_address
      * @param amount
      */
-    sendMoneyToWallet(uid, wallet, wallet_address, amount){}
+    sendMoneyToWallet(uid, crypto, crypto_address, amount){}
 
     /**
      * Send money to a friend
@@ -50,66 +51,77 @@ export default class Wallet {
     sendMoneyToFriend(uid, frnid, amount){}
 
     /**
-     * Create new wallet on wallet_type
+     * Create new crypto on crypto_type
      * @param uid
-     * @param wallet_type
+     * @param crypto_type
      */
-    createWallet(uid, wallet_type){}
+    createWallet(uid, crypto_type){}
 
     /**
-     * Transactions in wallet
+     * Import a wallet
      * @param uid
-     * @param wallet
+     * @param crypto_type
+     * @param wallet_address
+     * @param private_key
      */
-    getTransactions(uid, wallet){}
+    importWallet(uid, crypto_type, wallet_address, private_key) {
+
+    }
 
     /**
-     * Schedule payments to wallet by period
+     * Transactions in crypto
+     * @param uid
+     * @param crypto
+     */
+    getTransactions(uid, crypto){}
+
+    /**
+     * Schedule payments to crypto by period
      * @param uid
      * @param period - supported daily, weekly, monthly
-     * @param wallet
-     * @param wallet_address
+     * @param crypto
+     * @param crypto_address
      * @param amount
      */
-    scheduleTransaction(uid, period, wallet, wallet_address, amount){}
+    scheduleTransaction(uid, period, crypto, crypto_address, amount){}
 
     /**
      * Create new friend
      * @param uid
      * @param name
-     * @param wallet
-     * @param wallet_address
+     * @param crypto
+     * @param crypto_address
      */
-    createFriend(uid, name, wallet, wallet_address) {
+    createFriend(uid, name, crypto, crypto_address) {
         const errors = [];
         if (Functions.isNull(name)) {
             errors.push({name: "Name is not defined"})
         }
-        if (Functions.isNull(wallet)) {
-            errors.push({wallet: "wallet is not defined"})
+        if (Functions.isNull(crypto)) {
+            errors.push({crypto: "crypto is not defined"})
         } else {
-            //Check wallet is supported
-            wallet = wallet.toLowerCase();
+            //Check crypto is supported
+            crypto = crypto.toLowerCase();
 
-            if (!CryptoCore.isSupported(wallet)) {
-                errors.push({wallet: "wallet not supported"})
+            if (!CryptoCore.isSupported(crypto)) {
+                errors.push({crypto: "crypto not supported"})
             }
         }
-        if (Functions.isNull(wallet_address)) {
-            errors.push({wallet_address: "wallet_address is not defined"})
+        if (Functions.isNull(crypto_address)) {
+            errors.push({crypto_address: "crypto_address is not defined"})
         }
         if (!errors.isEmpty()) {
             return Promise.reject(Error.errorResponse(Error.INVALID_DATA, errors));
         }
 
-        //Check wallet is valid
-        console.log(`Checking wallet is valid -> ${wallet}::${wallet_address}`);
+        //Check crypto is valid
+        console.log(`Checking crypto is valid -> ${crypto}::${crypto_address}`);
         return CryptoCore
-            .getCrypto(wallet)
-            .isWalletValid(wallet_address)
+            .getCrypto(crypto)
+            .isWalletValid(crypto_address)
             .then(value => {
                 const db = new Database();
-                const data = {uid, frnid:uuidv4(), name, wallet, wallet_address, created_on: new Date().toISOString()};
+                const data = {uid, frnid:uuidv4(), name, crypto, crypto_address, created_on: new Date().toISOString()};
                 return db
                     .insert(Wallet.friends_table, data)
                     .then(value => {

@@ -6,7 +6,7 @@ export default class Error {
     static ACCOUNT_NOT_FOUND = {...Error.FAIL, code: 201, message: "Account not found"};
     static ACCOUNT_NOT_ACTIVATED = {...Error.FAIL, code: 202, message: "Account not activated"};
     static ACCOUNT_INCORRECT_PASSWORD = {...Error.FAIL, code: 203, message: "Incorrect password"};
-    static INVALID_DATA = {...Error.FAIL, code: 204, message: "Input is invalid"};
+    static INVALID_DATA = {...Error.FAIL, code: 204, message: "Data is invalid"};
     static ACCOUNT_EXISTS = {...Error.FAIL, code: 205, message: "Account already exists"};
     static NOT_CREATED = {...Error.FAIL, code: 206, message: "Data not created"};
     static NOT_FOUND = {...Error.FAIL, code: 207, message: "Data not found"};

@@ -16,10 +16,21 @@ export default class CryptoCore {
         let cryptoClass = require(path);
         if (cryptoClass.default.prototype instanceof CryptoInterface) {
             const name = cryptoClass.default.getName();
+            /**
+             * Create a new instance of the crypto class
+             * @type {CryptoInterface}
+             */
+            const inst = new cryptoClass.default();
 
-            this.supported_cryptos[name] = new cryptoClass.default();
-
-            console.log(`CryptoInterface -> [${name}] loaded`);
+            //Call setup
+            inst.setup()
+                .then(value => {
+                    this.supported_cryptos[name] = inst;
+                    console.log(`CryptoCore -> [${name}] loaded`);
+                })
+                .catch(reason => {
+                    console.log(`CryptoCore -> [${name}] not loaded`);
+                });
         } else {
             throw `${path} is not a instance of CryptoInterface`;
         }
