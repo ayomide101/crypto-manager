@@ -101,10 +101,8 @@ export default class Wallet {
             errors.push({crypto: "crypto is not defined"})
         } else {
             //Check crypto is supported
-            crypto = crypto.toLowerCase();
-
             if (!CryptoCore.isSupported(crypto)) {
-                errors.push({crypto: "crypto not supported"})
+                return Promise.reject(Error.WALLET_NOT_SUPPORTED);
             }
         }
         if (Functions.isNull(crypto_address)) {

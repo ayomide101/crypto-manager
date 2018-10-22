@@ -11,10 +11,9 @@ import index from "./routes/index";
 import angularApp from "./routes/app";
 import api from "./routes/api";
 import authorize from "./routes/authorize";
+import cryptoWebhoook from "./routes/crypto-webhook";
 import helmet from "helmet";
 import Functions from "./modules/functions";
-
-CryptoCore.initCryptos();
 
 const app = express();
 
@@ -59,6 +58,7 @@ if (!Functions.getConfig('maintenance_mode')) {
     app.use('/', index);
     app.use('/authorize', authorize);
     app.use('/api', api);
+    app.use('/webhook', cryptoWebhoook);
     app.use('/app', angularApp);
 } else {
     app.use('/', require('./routes/maintenance'));

@@ -4,7 +4,7 @@ export default class CryptoInterface {
      * Setup block chain
      * Will be called immediately after crypto is instantiated
      */
-    setup() {
+    setup(baseurl) {
 
     }
 
@@ -34,6 +34,18 @@ export default class CryptoInterface {
 
     getTransactions() {
 
+    }
+
+    onNewEvent(data) {
+
+    }
+
+    /**
+     * Checks if Crypto supports webhook
+     * @returns {boolean}
+     */
+    isSupportWebHook() {
+        return false;
     }
 
     static getName() {

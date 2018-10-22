@@ -8,56 +8,146 @@ import WAValidator from "wallet-address-validator";
 
 export default class BitcoinCrypto extends CryptoInterface {
 
+    static webhook_id = "crypto-manager-webhook";
+    static confirmations = 6;
+
     /**
-     * @param live {boolean}
+     *
+     * @type {boolean}
+     */
+    isWebHookDone = false;
+
+    /**
+     * @type live {boolean}
      */
     live;
 
     /**
-     * @param client {APIClient}
+     * @type client {APIClient}
      */
     client;
 
     /**
      * Setup
-     * @param options
+     * @param options {object}
+     * @param baseurl {null}
      * @returns {Promise<boolean>}
      */
-    setup(options=null) {
+    setup(options = null, baseurl = null) {
         return new Promise((resolve, reject) => {
             this.log(`Setting up -> ${BitcoinCrypto.getName()}`);
 
-            const cryptoConfig = Functions.isNull(options) ? Functions.getConfig("crypto-config"):options;
+            const cryptoConfig = Functions.isNull(options) ? Functions.getConfig("crypto-config") : options;
 
             if (Functions.isNull(cryptoConfig)) {
                 reject(this.log("crypto-config not present in config or null passed to setup", true));
+                return;
             }
 
             const bitcoinConfig = cryptoConfig.bitcoin;
             if (Functions.isNull(bitcoinConfig)) {
                 reject(this.log("`bitcoin` object not present in config", true));
+                return;
             }
 
             const apiKey = bitcoinConfig.apiKey;
             if (Functions.isNull(apiKey)) {
                 reject(this.log(`apiKey cannot be null`, true));
+                return;
             }
             const apiSecret = bitcoinConfig.apiSecret;
             if (Functions.isNull(apiSecret)) {
                 reject(this.log(`apiSecret cannot be null`, true));
+                return;
             }
 
+            if (Functions.isNull(baseurl)) {
+                reject(this.error(`baseurl cannot be null`));
+                return;
+            }
 
             this.live = cryptoConfig.live;
 
             try {
-                this.client = blocktrail.BlocktrailSDK({apiKey: apiKey, apiSecret: apiSecret, network: "BTC", testnet: true});
-                resolve(true);
-            } catch(e) {
+                this.client = blocktrail.BlocktrailSDK({
+                    apiKey: apiKey,
+                    apiSecret: apiSecret,
+                    network: "BTC",
+                    testnet: true
+                });
+                this._setupWebHook(baseurl)
+                    .then(value => {
+                        resolve(true);
+                    })
+                    .catch(reason => {
+                        reject(reason);
+                    });
+            } catch (e) {
                 this.log(e, true);
                 reject(this.log(`failed to setup blocktrail`, true));
             }
         });
+    }
+
+    /**
+     * Setup a webhook to get new events on
+     * @param baseurl
+     * @returns {Promise<string>}
+     * @private
+     */
+    _setupWebHook(baseurl) {
+        this.log(`Setting up webhook on -> ${baseurl}`);
+        return new Promise((resolve, reject) => {
+
+            this.client.setupWebhook(baseurl, BitcoinCrypto.webhook_id,
+                (err, result) => {
+                    if (err) {
+                        if (err.message === "A webhook with that identifier already exists") {
+                            this.isWebHookDone = true;
+                            this.error(err.message);
+                            resolve(this.log(`Webhook already created`));
+                        } else {
+                            this.isWebHookDone = false;
+                            this.error(err);
+                            reject(this.error(`Failed to setup webhook`));
+                        }
+                    } else {
+                        this.log(result);
+                        this.isWebHookDone = true;
+                        resolve(this.log(`Webhook created`));
+                    }
+                });
+        });
+    }
+
+    /**
+     * Listen for new events on address
+     * @param address
+     * @returns {Promise<boolean | string>}
+     * @private
+     */
+    _subscribeAddressToWebHook(address) {
+        return this.isWalletValid(address)
+            .then(isValid => {
+                return new Promise((resolve, reject) => {
+
+                    this.log(`Subscribing address to webhook -> ${address}`);
+
+                    this.client.subscribeAddressTransactions(BitcoinCrypto.webhook_id,
+                        address, BitcoinCrypto.confirmations, (err, result) => {
+                            if (err) {
+                                this.error(err);
+                                reject(this.error(`Address webhook subscription failed -> ${address}`));
+                            } else {
+                                console.log(result);
+                                resolve(this.log(`Address webhook subscription successful -> ${address}`));
+                            }
+                        });
+                });
+            })
+            .catch(reason => {
+                return Promise.reject(reason);
+            });
     }
 
     /**
@@ -85,8 +175,14 @@ export default class BitcoinCrypto extends CryptoInterface {
                     reject(self.log(`Create wallet failed`, true));
                 } else {
                     //Pull recovery keys for user - walletVersion, encryptedPrimarySeed, backupSeed, recoveryEncryptedSecret, encryptedSecret
-                    let { walletVersion, encryptedPrimarySeed, backupSeed, recoveryEncryptedSecret, encryptedSecret } = backupInfo;
-                    const data = {walletVersion, encryptedPrimarySeed, backupSeed, recoveryEncryptedSecret, encryptedSecret};
+                    let {walletVersion, encryptedPrimarySeed, backupSeed, recoveryEncryptedSecret, encryptedSecret} = backupInfo;
+                    const data = {
+                        walletVersion,
+                        encryptedPrimarySeed,
+                        backupSeed,
+                        recoveryEncryptedSecret,
+                        encryptedSecret
+                    };
                     self.log(data);
                     self.log(generatePassPhrase);
                     self.log(name);
@@ -107,13 +203,17 @@ export default class BitcoinCrypto extends CryptoInterface {
             .then(wallet => {
                 return new Promise((resolve, reject) => {
                     self.log(`Creating new address -> ${cryptoBean.identifier}`);
-                    wallet.getNewAddress(function (err, address) {
+                    wallet.getNewAddress((err, address) => {
                         if (err) {
                             self.err(err);
                             reject(self.log(`could not generate new address`, true));
                         } else {
                             self.log(address);
-                            resolve(new CryptoAddress(address));
+                            this._subscribeAddressToWebHook(address)
+                                .then(value => {
+                                    resolve(new CryptoAddress(address));
+                                })
+                                .catch(reason => reject(reason));
                         }
                     });
                 });
@@ -171,7 +271,7 @@ export default class BitcoinCrypto extends CryptoInterface {
             return Promise.reject(this.error(`wallet_address cannot be null`));
         }
         this.log(`checking address valid -> ${wallet_address}`);
-        const valid = WAValidator.validate(wallet_address, 'BTC', this.live ? "prod":"testnet");
+        const valid = WAValidator.validate(wallet_address, 'BTC', this.live ? "prod" : "testnet");
 
         if (valid) {
             this.log(`wallet is valid`);
@@ -189,9 +289,9 @@ export default class BitcoinCrypto extends CryptoInterface {
      */
     _getBalanceInternal(wallet) {
         this.log(`getting balance`);
-        const self  = this;
+        const self = this;
         return new Promise((resolve, reject) => {
-            wallet.getBalance(function(err, confirmedBalance, unconfirmedBalance) {
+            wallet.getBalance(function (err, confirmedBalance, unconfirmedBalance) {
                 if (err) {
                     self.error(err);
                     reject(self.error(`Could not get balance`));
@@ -245,13 +345,12 @@ export default class BitcoinCrypto extends CryptoInterface {
             return Promise.reject(self.error(`amount cannot be negative`));
         }
 
-        return this.
-            isWalletValid(wallet_address)
+        return this.isWalletValid(wallet_address)
             .then((isvalid) => this._openWallet(cryptoBean))
             .then(wallet => {
                 return self._getBalanceInternal(wallet)
                     .then(balance => {
-                        return Promise.resolve({wallet: wallet, balance:balance});
+                        return Promise.resolve({wallet: wallet, balance: balance});
                     })
                     .catch(reason => Promise.reject(reason));
             })
@@ -269,7 +368,7 @@ export default class BitcoinCrypto extends CryptoInterface {
 
                     self.log(`Sending payment to blockchain for -> ${wallet_address}`);
                     wallet.pay(data,
-                        function(err, transactionId) {
+                        function (err, transactionId) {
                             if (err) {
                                 self.error(err);
                                 reject(self.error(`Could not send transaction`));
@@ -306,7 +405,7 @@ export default class BitcoinCrypto extends CryptoInterface {
         return this._openWallet(cryptoBean)
             .then(wallet => {
                 return new Promise((resolve, reject) => {
-                    wallet.transactions(function(err, transactions) {
+                    wallet.transactions(function (err, transactions) {
                         if (err) {
                             self.error(err);
                             reject(self.error(`Could not retrieve transactions`));
@@ -330,6 +429,10 @@ export default class BitcoinCrypto extends CryptoInterface {
                 });
             })
             .catch(reason => Promise.reject(reason));
+    }
+
+    onNewEvent(data) {
+
     }
 
     static getName() {

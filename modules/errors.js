@@ -19,6 +19,8 @@ export default class Error {
     static FRIEND_NOT_CREATED = {...Error.FAIL, code: 214, message: "Friend not created"};
     static INVALID_WALLET_ADDRESS = {...Error.FAIL, code: 215, message: "Invalid wallet address"};
     static FRIEND_NOT_DELETED = {...Error.FAIL, code: 216, message: "Friend not deleted"};
+    static WALLET_NOT_SUPPORTED = {...Error.FAIL, code:217, messasge: "Wallet not supported"};
+    static WEBHOOK_NOT_SUPPORTED = {...Error.FAIL, code:218, messasge: "Webhook not supported"};
 
     /**
      * Attaches

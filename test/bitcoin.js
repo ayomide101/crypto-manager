@@ -16,9 +16,22 @@ describe('bitcoin test', () => {
             }
         });
 
+        it('should pass when base url not sent', async () => {
+            try {
+                let result = await bitcoin.setup(null, null);
+                expect(result).to.be.instanceOf('undefined');
+            } catch (e) {
+                expect(e).to.equal('baseurl cannot be null');
+            }
+        });
+
         it('should pass when using right config', async () => {
-            let result = await bitcoin.setup();
-            expect(result).to.equal(true);
+            try {
+                let result = await bitcoin.setup(null, "http://127.0.0.1:8080/webhook/bitcoin");
+                expect(result).to.equal(true);
+            } catch(e) {
+                expect(e).to.equal(undefined);
+            }
         });
     });
 
@@ -50,7 +63,7 @@ describe('bitcoin test', () => {
 
     describe('create wallet address', () => {
         before(async () => {
-            const result = await bitcoin.setup();
+            const result = await bitcoin.setup(null, "https://45.55.33.189:8080/webhook/bitcoin");
             expect(result).to.equal(true);
         });
 
@@ -101,8 +114,8 @@ describe('bitcoin test', () => {
         it('should pass if passPhrase & identifier are correct', async () => {
             try {
                 const result = await bitcoin.createWalletAddress(new CryptoBean(
-                    '',
-                    ''
+                    'cryptomanager-test-wallet-3',
+                    'a57dcde80a0d9dce7f842ea108a4f368dbc6ba996d504a0e16c3fa097f6b1f9aa25a807075128bc1d401901b022bf1210da5722942691cfe6f12584ebdb6863a'
                 ));
                 expect(result).to.be.instanceOf(CryptoAddress);
             } catch (e) {
