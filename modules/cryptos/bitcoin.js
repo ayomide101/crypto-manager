@@ -426,7 +426,7 @@ export default class BitcoinCrypto extends CryptoInterface {
                                     console.log('---WALLET---');
                                     console.log(transaction.wallet);
                                     d.push(new CryptoTransaction(transaction.addresses, transaction.hash,
-                                        transaction.time, self._toBtc(transaction.total_fee), self._toBtc(transaction.total_input_value), self._toBtc(transaction.total_output_value), transaction.confirmations, transactions.outputs));
+                                        transaction.time, self._toBtc(transaction.total_fee), self._toBtc(transaction.total_input_value), self._toBtc(transaction.total_output_value), transaction.confirmations, transaction.outputs));
                                 }
                                 resolve(d);
                             }
