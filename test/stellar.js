@@ -207,7 +207,7 @@ describe('stellar test', () => {
         it('should pass has transactions', async () => {
             try {
                 const result = await stellar.getTransactions(new CryptoBean(
-                    '',
+                    'cryptomanager-test-wallet-2',
                     ''
                 ));
                 expect(result).to.be.an('array').that.is.not.empty;

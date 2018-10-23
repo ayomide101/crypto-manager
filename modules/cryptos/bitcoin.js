@@ -6,23 +6,28 @@ import uuidv4 from "uuid/v4";
 import blocktrail from "blocktrail-sdk";
 import WAValidator from "wallet-address-validator";
 
+/**
+ * BitcoinCrypto
+ */
 export default class BitcoinCrypto extends CryptoInterface {
 
     static webhook_id = "crypto-manager-webhook";
     static confirmations = 6;
 
     /**
-     *
+     * webhook
      * @type {boolean}
      */
     isWebHookDone = false;
 
     /**
+     * is crypto live
      * @type live {boolean}
      */
     live;
 
     /**
+     * APIClient
      * @type client {APIClient}
      */
     client;
@@ -425,8 +430,13 @@ export default class BitcoinCrypto extends CryptoInterface {
                                     console.log(transaction.outputs); //Source funds
                                     console.log('---WALLET---');
                                     console.log(transaction.wallet);
+
+                                    let outputs = [];
+                                    for (let j = 0; j < transaction.outputs.length; j++) {
+                                        outputs.push(transaction.outputs[j].address);
+                                    }
                                     d.push(new CryptoTransaction(transaction.addresses, transaction.hash,
-                                        transaction.time, self._toBtc(transaction.total_fee), self._toBtc(transaction.total_input_value), self._toBtc(transaction.total_output_value), transaction.confirmations, transaction.outputs));
+                                        transaction.time, self._toBtc(transaction.total_fee), self._toBtc(transaction.total_input_value), self._toBtc(transaction.total_output_value), transaction.confirmations, outputs));
                                 }
                                 resolve(d);
                             }
