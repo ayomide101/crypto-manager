@@ -15,6 +15,7 @@ totp.options = {crypto, step: 5 * 60};//Step is in seconds
 
 export default class User {
 
+
     mailer = new Mailer();
 
     /**
@@ -368,6 +369,14 @@ export default class User {
         });
     }
 
+    /**
+     * Create account
+     * @param email
+     * @param password
+     * @param name
+     * @param phonenumber
+     * @returns {*}
+     */
     createAccount(email, password, name, phonenumber) {
         const errors = [];
         if (Functions.isNull(name)) {
@@ -451,6 +460,11 @@ export default class User {
         });
     }
 
+    /**
+     * Activate user account using activation code
+     * @param code
+     * @returns {Promise<Error>}
+     */
     activateAccount(code) {
         const errors = [];
         if (Functions.isNull(code)) {
@@ -517,6 +531,12 @@ export default class User {
         });
     }
 
+    /**
+     * Confirm 2FA send to user
+     * @param otp
+     * @param token
+     * @returns {Promise<any>}
+     */
     confirm2FA(otp, token) {
         return new Promise((resolve, reject) => {
             const error = [];
@@ -602,6 +622,12 @@ export default class User {
         });
     }
 
+    /**
+     * Check if token is revoked
+     * @param issuer
+     * @param tokenId
+     * @param cb
+     */
     getRevokedToken(issuer, tokenId, cb) {
         const db = new Database();
         console.log(`Checking if token is active -> ${issuer}::${tokenId}`);
@@ -622,6 +648,11 @@ export default class User {
             });
     }
 
+    /**
+     * Get user details
+     * @param uid
+     * @returns {Promise<{status: boolean, code: number, message: *, data: *}>}
+     */
     getDetails(uid) {
         const db = new Database();
         return db.select("users", {uid})
@@ -630,5 +661,25 @@ export default class User {
 
                 return Promise.resolve(Error.successError("User", User.sanitizeUser(user)));
             });
+    }
+
+    /**
+     * Return user information if valid
+     * @param uid
+     * @returns {Promise<{}>}
+     */
+    isUserValid(uid) {
+        console.log(`Checking user -> ${uid}`);
+        if (Functions.isNull(uid)) {
+            return Promise.resolve(Error.errorResponse(Error.INVALID_DATA, {uid: "uid cannot be null"}));
+        } else {
+            return this.getDetails(uid).then(user => {
+                if (user.status === "activated") {
+                    return Promise.resolve(user);
+                } else {
+                    return Promise.reject(Error.ACCOUNT_BLOCKED);
+                }
+            });
+        }
     }
 }

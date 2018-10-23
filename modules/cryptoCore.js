@@ -13,6 +13,7 @@ export default class CryptoCore {
     static initCryptos(baseurl) {
         CryptoCore.baseurl = baseurl;
         CryptoCore.addCrypto("./cryptos/bitcoin.js");
+        CryptoCore.addCrypto("./cryptos/stellar.js");
     }
 
     /**

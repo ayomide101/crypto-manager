@@ -1,4 +1,7 @@
 export default class HttpRequest {
+
+    http;
+
     /**
      * HTTP REQUEST CLASS
      * make http request calls to global API
@@ -9,10 +12,10 @@ export default class HttpRequest {
             options = getConfig('http.request');
         }
         if (options.secure) {
-            http = require('https');
+            this.http = require('https');
             options.port = 443;
         } else {
-            http = require('http');
+            this.http = require('http');
         }
         this.options = options;
 
@@ -29,7 +32,7 @@ export default class HttpRequest {
         options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
         options.headers['Content-Length'] = Buffer.byteLength(params);
 
-        var request = http.request(options, function (res) {
+        var request = this.http.request(options, function (res) {
             // res.setEncoding('utf8');
             var response = "";
             res.on('data', function (chunk) {
@@ -67,6 +70,27 @@ export default class HttpRequest {
 
     get(params, successCallback, errorCallback) {
         this.request('GET', params, successCallback, errorCallback);
+    }
+
+    getUrl(url) {
+        return new Promise((resolve, reject) => {
+            this.http.get(url, (res) => {
+                let response = "";
+                res.on('data', function (chunk) {
+                    response += chunk;
+                });
+                res.on('end', function () {
+                    try {
+                        response = JSON.parse(response);
+                    } catch (e) {
+                    }
+                    resolve(response);
+                });
+            }).on("error", (err) => {
+                reject(err);
+                console.log("Error: " + err.message);
+            });
+        });
     }
 
     setOptions(options) {

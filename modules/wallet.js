@@ -3,11 +3,21 @@ import Error from "./errors";
 import Functions from "./functions";
 import uuidv4 from "uuid/v4";
 import CryptoCore from "./cryptoCore";
+import User from "./user-account";
 
 export default class Wallet {
 
     static friends_table = "friends";
-    static wallets_table = "";
+    static wallets_table = "wallets";
+    /**
+     * Users object
+     * @type {User}
+     */
+    users;
+
+    constructor() {
+        this.users = new User();
+    }
 
     /**
      * Balance from one crypto
@@ -22,7 +32,9 @@ export default class Wallet {
      * Balance from all cryptos
      * @param uid
      */
-    getBalances(uid){}
+    getBalances(uid) {
+
+    }
 
     /**
      * Add amount to crypto
@@ -55,7 +67,30 @@ export default class Wallet {
      * @param uid
      * @param crypto_type
      */
-    createWallet(uid, crypto_type){}
+    createWallet(uid, crypto_type){
+        return this.users
+            .isUserValid(uid)
+            .then(user => {
+                const crypto = CryptoCore.getCrypto(crypto_type);
+
+                // crypto.createWallet()
+            })
+            .catch(reason => Promise.reject(reason));
+    }
+
+    log(message, error) {
+        if (error) {
+            console.error(message);
+        } else {
+            console.log(message);
+        }
+        return message;
+    }
+
+    error(message) {
+        return this.log(message, true);
+    }
+
 
     /**
      * Import a wallet

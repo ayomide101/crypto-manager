@@ -12,15 +12,15 @@ export default class CryptoInterface {
      *
      * @returns Promise
      */
-    createWallet(data) {
+    createWallet(name) {
         return null;
     }
 
-    createWalletAddress(data) {
+    createWalletAddress(cryptoBean) {
 
     }
 
-    sendTransaction() {
+    sendTransaction(cryptoBean, wallet_address, amount) {
         return null;
     }
 
@@ -28,11 +28,11 @@ export default class CryptoInterface {
         return Promise.resolve(true)
     }
 
-    getBalance() {
+    getBalance(cryptoBean) {
         return true;
     }
 
-    getTransactions() {
+    getTransactions(cryptoBean) {
 
     }
 

@@ -14,36 +14,40 @@
 		"host": "127.0.0.1",
 		"port": 3306,
 		"database" : "cryptomanager",
-		"user": "root",
-		"password": "mysql"
+		"user": "",
+		"password": ""
 	},
 	"session.security": {
 		"name": "sessid",
-		"secret": "1nUDlHmtUlQ8qENropilEkf8uMA3Xuvy",
+		"secret": "",
 		"resave": false,
 		"saveUninitialized": true,
 		"session_duration": 2700000,
-		"privatekey":"jwt.key",
-		"publickey":"jwt.key.pub"
+		"privatekey":"",
+		"publickey":""
 	},
 	"mail.config": {
 		"host": "smtp.zoho.com",
 		"port": 465,
 		"secure": true,
 		"auth": {
-			"user": "noreply@dropbuddies.com",
-			"pass": "PLkW%cMLl2vp"
+			"user": "",
+			"pass": ""
 		}
 	},
 	"crypto-config": {
 		"live" : false,
 		"bitcoin": {
-			"apiKey":"2982ad54afbf1837e2e18d704a732c27d22549f1",
-			"apiSecret":"53dbd5fcb8bfb3498a0a4f8b8ab6c352755bf4e7"
+			"apiKey":"",
+			"apiSecret":""
+		},
+		"stellar": {
+			"live":"https://horizon.stellar.org",
+			"test":"https://horizon-testnet.stellar.org"
 		}
 	},
 	"mailChimp": {
-		"key": "0e67055befc893972aeee21dbc53895e-us14",
-		"id": "d83f9fde4c"
+		"key": "",
+		"id": ""
 	}
 }

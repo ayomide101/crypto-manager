@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "nodemon --exec babel-node --presets env,stage-2 ./bin/www",
-    "test": "mocha --require babel-core/register --require test/support/env --reporter spec --bail --check-leaks test/"
+    "test": "mocha -t 100000 --require babel-core/register --require test/support/env --reporter spec --bail --check-leaks test/"
   },
   "dependencies": {
     "bitcore-lib": "^8.0.0",

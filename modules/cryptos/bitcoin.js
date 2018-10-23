@@ -61,6 +61,8 @@ export default class BitcoinCrypto extends CryptoInterface {
                 return;
             }
 
+            baseurl = (Functions.isNull(baseurl)) ? Functions.getConfig("base_url")+BitcoinCrypto.getName()+"/webhook":baseurl;
+
             if (Functions.isNull(baseurl)) {
                 reject(this.error(`baseurl cannot be null`));
                 return;
@@ -257,7 +259,7 @@ export default class BitcoinCrypto extends CryptoInterface {
                 });
             });
         } else {
-            return Promise.reject(this.error(`bean not instance of CryptoBean`, true))
+            return Promise.reject(this.error(`bean not instance of CryptoBean`));
         }
     }
 
@@ -411,17 +413,21 @@ export default class BitcoinCrypto extends CryptoInterface {
                             reject(self.error(`Could not retrieve transactions`));
                         } else {
                             self.log(`Transactions retrieved`);
-                            self.log(transactions);
                             if (Functions.isNull(transactions.data) || transactions.data.length <= 0) {
                                 reject(self.error(`No transactions`));
                             } else {
                                 const d = [];
                                 for (let i = 0; i < transactions.data.length; i++) {
                                     const transaction = transactions.data[i];
+                                    console.log('---INPUT---');
+                                    console.log(transaction.inputs); //Destination funds
+                                    console.log('---OUTPUT---');
+                                    console.log(transaction.outputs); //Source funds
+                                    console.log('---WALLET---');
+                                    console.log(transaction.wallet);
                                     d.push(new CryptoTransaction(transaction.addresses, transaction.hash,
-                                        transaction.time, self._toBtc(transaction.total_fee), self._toBtc(transaction.total_input_value), self._toBtc(transaction.total_output_value), transaction.confirmations));
+                                        transaction.time, self._toBtc(transaction.total_fee), self._toBtc(transaction.total_input_value), self._toBtc(transaction.total_output_value), transaction.confirmations, transactions.outputs));
                                 }
-                                console.log(d);
                                 resolve(d);
                             }
                         }

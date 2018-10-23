@@ -31,15 +31,28 @@ export class CryptoBalance {
 }
 
 export class CryptoTransaction {
+    /**
+     * Array of receiving addresses
+     * @type []
+     */
     addresses;
+    /**
+     * Array of sending addresses
+     * @type []
+     */
+    source_addresses;
     hash;
+    /**
+     * UTC timestamp
+     * @type int
+     */
     time;
     fee;
     amount_in;
     amount_out;
     confirmations;
 
-    constructor(addresses, hash, time, fee, amount_in, amount_out, confirmations) {
+    constructor(addresses, hash, time, fee, amount_in, amount_out, confirmations, source_addresses) {
         this.addresses = addresses;
         this.hash = hash;
         this.fee = fee;
@@ -47,5 +60,6 @@ export class CryptoTransaction {
         this.amount_in = amount_in;
         this.amount_out = amount_out;
         this.confirmations = confirmations;
+        this.source_addresses = source_addresses;
     }
 }

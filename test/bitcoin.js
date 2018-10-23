@@ -7,7 +7,7 @@ import {CryptoAddress, CryptoBalance, CryptoBean, CryptoTransaction} from "../mo
 describe('bitcoin test', () => {
     let bitcoin = new BitcoinCrypto();
     describe('setup bitcoin', () => {
-        it('should pass when wrong config sent', async () => {
+        it('should pass if config invalid', async () => {
             try {
                 let result = await bitcoin.setup({});
                 expect(result).to.be.instanceOf('undefined');
@@ -16,7 +16,7 @@ describe('bitcoin test', () => {
             }
         });
 
-        it('should pass when base url not sent', async () => {
+        it('should pass if base url invalid', async () => {
             try {
                 let result = await bitcoin.setup(null, null);
                 expect(result).to.be.instanceOf('undefined');
@@ -25,7 +25,7 @@ describe('bitcoin test', () => {
             }
         });
 
-        it('should pass when using right config', async () => {
+        it('should pass if config invalid', async () => {
             try {
                 let result = await bitcoin.setup(null, "http://127.0.0.1:8080/webhook/bitcoin");
                 expect(result).to.equal(true);
@@ -109,7 +109,7 @@ describe('bitcoin test', () => {
             } catch (e) {
                 expect(e).to.be.a('string');
             }
-        }).timeout(5000);
+        });
 
         it('should pass if passPhrase & identifier are correct', async () => {
             try {
@@ -121,7 +121,7 @@ describe('bitcoin test', () => {
             } catch (e) {
                 expect(e).to.equal('could not generate new address');
             }
-        }).timeout(5000);
+        });
     });
 
     describe('check wallet valid', () => {
@@ -148,7 +148,7 @@ describe('bitcoin test', () => {
 
         it('should pass address is valid', async () => {
             try {
-                const result = await bitcoin.isWalletValid("2NELkod94FciEYVfdSPmYFchBjKTUzXy8Bj");
+                const result = await bitcoin.isWalletValid("");
                 expect(result).to.equal(true);
             } catch (e) {
                 expect(e).to.be.a('string');
@@ -216,7 +216,7 @@ describe('bitcoin test', () => {
             } catch (e) {
                 expect(e).to.be.a('string');
             }
-        }).timeout(5000);
+        });
     });
 
     describe('send transaction', () => {
@@ -328,7 +328,7 @@ describe('bitcoin test', () => {
             } catch (e) {
                 expect(e).to.equal('Not enough money in wallet');
             }
-        }).timeout(10000);
+        });
 
         it('should pass enough money in account and valid address', async () => {
             try {
@@ -341,7 +341,7 @@ describe('bitcoin test', () => {
                 console.log(e);
                 expect(e).to.equal('Not enough money in wallet');
             }
-        }).timeout(10000);
+        });
     });
 
     describe('get transactions', function () {
@@ -405,7 +405,7 @@ describe('bitcoin test', () => {
             } catch (e) {
                 expect(e).to.equal('No transactions');
             }
-        }).timeout(10000);
+        });
 
         it('should pass no transactions', async () => {
             try {
@@ -418,6 +418,6 @@ describe('bitcoin test', () => {
             } catch (e) {
                 expect(e).to.equal('No transactions');
             }
-        }).timeout(10000);
+        });
     });
 });
