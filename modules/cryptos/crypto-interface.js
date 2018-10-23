@@ -20,7 +20,7 @@ export default class CryptoInterface {
 
     }
 
-    sendTransaction(cryptoBean, wallet_address, amount) {
+    sendTransaction(cryptoBean, receiver_wallet_address, amount) {
         return null;
     }
 

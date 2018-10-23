@@ -1,7 +1,7 @@
 import 'babel-polyfill'
 import StellarCrypto from "../modules/cryptos/stellar";
 import {expect} from "chai";
-import {CryptoAddress, CryptoBalance, CryptoBean} from "../modules/cryptos/cryptostruct";
+import {CryptoAddress, CryptoBalance, CryptoBean, CryptoTransaction} from "../modules/cryptos/cryptostruct";
 
 describe('stellar test', () => {
     let stellar = new StellarCrypto();
@@ -207,12 +207,137 @@ describe('stellar test', () => {
         it('should pass has transactions', async () => {
             try {
                 const result = await stellar.getTransactions(new CryptoBean(
-                    'cryptomanager-test-wallet-2',
+                    '',
                     ''
                 ));
                 expect(result).to.be.an('array').that.is.not.empty;
             } catch (e) {
                 expect(e).to.equal('No transactions');
+            }
+        });
+    });
+
+    describe('send transaction', () => {
+        before(async () => {
+            const result = await stellar.setup();
+            expect(result).to.equal(true);
+        });
+
+        it('should pass if bean is null', async () => {
+            try {
+                const result = await stellar.sendTransaction(null);
+                expect(result).to.be.instanceOf(undefined);
+            } catch (e) {
+                expect(e).to.be.a('string');
+            }
+        });
+
+        it('should pass bean not instance of CryptoBean', async () => {
+            try {
+                const result = await stellar.sendTransaction({});
+            } catch (e) {
+                expect(e).to.be.a('string');
+            }
+        });
+
+        it('should pass if amount is null', async () => {
+            try {
+                const result = await stellar.sendTransaction(null, null, null);
+            } catch (e) {
+                expect(e).to.equal(`amount cannot be null`);
+            }
+        });
+
+        it('should pass if amount is nan', async () => {
+            try {
+                const result = await stellar.sendTransaction(null, null, "amount");
+            } catch (e) {
+                expect(e).to.equal(`amount cannot be NaN, must be a number`);
+            }
+        });
+
+        it('should pass if amount is negative', async () => {
+            try {
+                const result = await stellar.sendTransaction(null, null, -1);
+            } catch (e) {
+                expect(e).to.equal(`amount cannot be negative`);
+            }
+        });
+
+        it('should pass address is null', async () => {
+            try {
+                const result = await stellar.sendTransaction();
+            } catch (e) {
+                expect(e).to.be.a('string');
+            }
+        });
+
+        it('should pass address is invalid', async () => {
+            try {
+                const result = await stellar.sendTransaction(null, "adfasd", 1);
+            } catch (e) {
+                expect(e).to.equal("wallet is invalid");
+            }
+        });
+
+        it('should pass address is valid', async () => {
+            try {
+                const result = await stellar.sendTransaction(null, "", 1);
+                expect(result).to.equal(true);
+            } catch (e) {
+                expect(e).to.be.a('string');
+            }
+        });
+
+        it('should pass if passPhrase is null', async () => {
+            try {
+                const result = await stellar.sendTransaction(new CryptoBean());
+            } catch (e) {
+                expect(e).to.be.a('string');
+            }
+        });
+
+        it('should pass if identifier is null', async () => {
+            try {
+                const result = await stellar.sendTransaction(new CryptoBean());
+            } catch (e) {
+                expect(e).to.be.a('string');
+            }
+        });
+
+        it('should pass if passPhrase & identifier are incorrect', async () => {
+            try {
+                const result = await stellar.sendTransaction(new CryptoBean(
+                    '',
+                    ''
+                ));
+            } catch (e) {
+                expect(e).to.be.a('string');
+            }
+        });
+
+        it('should pass if amount more than balance', async () => {
+            try {
+                const result = await stellar.sendTransaction(new CryptoBean(
+                    '',
+                    ''
+                ), '', 200000);
+                expect(result).to.be.instanceOf(CryptoTransaction);
+            } catch (e) {
+                expect(e).to.equal('not enough money in wallet');
+            }
+        });
+
+        it('should pass enough money in account and valid address', async () => {
+            try {
+                const result = await stellar.sendTransaction(new CryptoBean(
+                    '',
+                    ''
+                ), '', 500);
+                expect(result).to.be.instanceOf(CryptoTransaction);
+            } catch (e) {
+                console.log(e);
+                expect(e).to.equal('Not enough money in wallet');
             }
         });
     });

@@ -326,7 +326,7 @@ describe('bitcoin test', () => {
                 ), '', 2000);
                 expect(result).to.be.instanceOf(CryptoTransaction);
             } catch (e) {
-                expect(e).to.equal('Not enough money in wallet');
+                expect(e).to.equal('not enough money in wallet');
             }
         });
 

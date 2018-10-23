@@ -7,7 +7,7 @@ export default class Functions {
      * @param config - specify the configuration to get, default gets a config
      */
     static getConfig (config) {
-        const path = process.env.ENVIRONMENT === 'production' ? '../app-production.json' : '../app-config.json';
+        const path = process.env.ENVIRONMENT === 'production' ? '../app-production.json' : '../app-config-sensitive.json';
         const appConfig = require(path);
 
         if (arguments.length > 0) {

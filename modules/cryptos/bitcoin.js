@@ -435,7 +435,7 @@ export default class BitcoinCrypto extends CryptoInterface {
                                     for (let j = 0; j < transaction.outputs.length; j++) {
                                         outputs.push(transaction.outputs[j].address);
                                     }
-                                    d.push(new CryptoTransaction(transaction.addresses, transaction.hash,
+                                    d.push(new CryptoTransaction(transaction.dest_addresses, transaction.hash,
                                         transaction.time, self._toBtc(transaction.total_fee), self._toBtc(transaction.total_input_value), self._toBtc(transaction.total_output_value), transaction.confirmations, outputs));
                                 }
                                 resolve(d);

@@ -74,9 +74,9 @@ export default class StellarCrypto extends CryptoInterface {
         // Derive Keypair object and public key (that starts with a G) from the secret
         const newAccount = StellarSdk.Keypair.random();
 
-        console.log('New key pair created!');
-        console.log(` Account ID: ${newAccount.publicKey()}`);
-        console.log(` Secret : ${newAccount.secret()}`);
+        // this.log('New key pair created!');
+        // this.log(` Account ID: ${newAccount.publicKey()}`);
+        // this.log(` Secret : ${newAccount.secret()}`);
 
         return new Promise((resolve, reject) => {
             this.log(`Creating -> ${StellarCrypto.getName()} wallet`);
@@ -120,8 +120,159 @@ export default class StellarCrypto extends CryptoInterface {
         });
     }
 
-    sendTransaction(cryptoBean, wallet_address, amount) {
+    _getTransactionFromBlockWith(url) {
+        this.log(`Getting transaction with -> ${url}`);
+        return new Promise((resolve, reject) => {
+            new HttpRequest({secure: true})
+                .getUrl(url)
+                .then(response => {
+                    this.log(`Response received`);
+                    this.log(response);
+                    resolve(response);
+                })
+                .catch(reason => {
+                    this.error(`Error occurred`);
+                    this.error(reason);
+                    reject(reason);
+                })
+        });
+    }
 
+    /**
+     *
+     * @param cryptoBean
+     * @param receiver_wallet_address
+     * @param amount
+     * @returns {*}
+     */
+    sendTransaction(cryptoBean, receiver_wallet_address, amount) {
+
+        this.log(`sendTransaction called`);
+        if (Functions.isNull(amount)) {
+            return Promise.reject(this.error(`amount cannot be null`));
+        }
+        if (isNaN(amount)) {
+            return Promise.reject(this.error(`amount cannot be NaN, must be a number`));
+        }
+        if (amount < 0) {
+            return Promise.reject(this.error(`amount cannot be negative`));
+        }
+
+        return this.isWalletValid(receiver_wallet_address)
+            .then(result => {
+                return this._openWallet(cryptoBean);
+            })
+            .then(account => {
+                return this._getBalanceWithAccount(account)
+                    .then(balance => {
+                        this.log(balance);
+                        return Promise.resolve({account, balance});
+                    })
+                    .catch(reason => Promise.reject(reason));
+            })
+            .then(data => {
+                const {account, balance} = data;
+
+                if (amount > (balance.unconfirmedBalance + balance.confirmedBalance)) {
+                    return Promise.reject(this.error(`not enough money in wallet`));
+                }
+
+                this.log(`Sending payment to blockchain for -> ${receiver_wallet_address}`);
+
+                return new Promise((resolve, reject) => {
+
+                    const transaction = new StellarSdk.TransactionBuilder(account)
+                        .addOperation(StellarSdk.Operation.payment({
+                            destination: receiver_wallet_address,
+                            asset: StellarSdk.Asset.native(),
+                            amount: amount.toString()
+                        }))
+                        .build();
+
+                    this.log(`Signing transaction -> ${StellarCrypto.getName()}`);
+
+                    transaction.sign(StellarSdk.Keypair.fromSecret(cryptoBean.passPhrase)); // sign the transaction
+
+                    this.log(transaction.toEnvelope().toXDR('base64'));
+
+                    this.server.submitTransaction(transaction)
+                        .then(transactionResult => {
+                            this.log(transactionResult);
+
+                            this.log(JSON.stringify(transactionResult, null, 2));
+                            this.log('\nSuccess! View the transaction at: ');
+                            const transactionLink = transactionResult._links.transaction.href;
+
+                            this.log(`Pulling transaction information via -> ${transactionLink}`);
+                            new HttpRequest({secure: true})
+                                .getUrl(transactionResult._links.transaction.href)
+                                .then(transaction => {
+                                    // this.log("------TRANSACTION INFO-----");
+                                    // this.log(transaction);
+
+                                    const cryptoTransaction = new CryptoTransaction();
+
+                                    cryptoTransaction.fee = transaction.fee_paid;
+                                    cryptoTransaction.confirmations = transaction.operation_count;
+
+                                   return Promise.resolve({paymentLink:transaction._links.operations.href.replace("{?cursor,limit,order}", ""), cryptoTransaction});
+                                })
+                                .then(props => {
+                                    const {paymentLink, cryptoTransaction} = props;
+
+                                    this.log(`Pulling payment information via -> ${paymentLink}`);
+
+                                    new HttpRequest({secure:true})
+                                        .getUrl(paymentLink)
+                                        .then(payment => {
+                                            // this.log("------PAYMENTS INFO-----");
+                                            // this.log(payment);
+                                            const paymentInformation = payment._embedded.records[0];
+                                            // this.log("--------PAYMENT INFO-----");
+                                            // this.log(paymentInformation);
+
+                                            if (paymentInformation['type'] === 'create_account') {
+                                                cryptoTransaction.source_addresses = [paymentInformation.funder];
+                                                cryptoTransaction.dest_addresses = [paymentInformation.account];
+                                                cryptoTransaction.type = 'create_account';
+                                                cryptoTransaction.amount_in = parseFloat(paymentInformation.starting_balance);
+                                                cryptoTransaction.amount_out = parseFloat(paymentInformation.starting_balance);
+                                            } else if (paymentInformation['type'] === 'payment') {
+                                                cryptoTransaction.source_addresses = [paymentInformation.from];
+                                                cryptoTransaction.dest_addresses = [paymentInformation.to];
+                                                cryptoTransaction.type = 'payment';
+                                                cryptoTransaction.amount_in = parseFloat(paymentInformation.amount);
+                                                cryptoTransaction.amount_out = parseFloat(paymentInformation.amount);
+                                            }
+
+                                            cryptoTransaction.time = Date.parse(paymentInformation.created_at);
+                                            cryptoTransaction.hash = paymentInformation.transaction_hash;
+
+                                            // this.log("-----CRYPTO INFO-----");
+                                            // this.log(cryptoTransaction);
+                                            // this.log("-----CRYPTO END-----");
+                                            resolve(cryptoTransaction);
+                                        })
+                                        .catch(reason => {
+                                            this.error(reason);
+                                            reject(this.error(`Transaction sent but could not pull payment info`));
+                                        });
+                                })
+                                .catch(reason => {
+                                    this.error(reason);
+                                    reject(this.error(`Transaction sent but could not pull tran info`));
+                                });
+                        })
+                        .catch(reason => {
+                            this.error(reason);
+                            reject(reason);
+                        });
+                });
+            })
+            .then(transactionResult => {
+                return Promise.resolve(transactionResult);
+            })
+            .catch(reason => Promise.reject(reason));
     }
 
     /**
@@ -141,7 +292,7 @@ export default class StellarCrypto extends CryptoInterface {
     /**
      * Check bean is valid
      * @param cryptoBean
-     * @returns {Promise<boolean>}
+     * @returns {Promise<{}>}
      * @private
      */
     _openWallet(cryptoBean) {
@@ -161,7 +312,7 @@ export default class StellarCrypto extends CryptoInterface {
                 return Promise.reject(this.error(`passPhrase cannot be null`));
             }
 
-            return Promise.resolve(true);
+            return this.isWalletValid(cryptoBean.identifier);
         } else {
             return Promise.reject(this.error(`bean not instance of CryptoBean`))
         }
@@ -176,9 +327,9 @@ export default class StellarCrypto extends CryptoInterface {
         this.log(`getBalance called`);
         return this._openWallet(cryptoBean)
             .then(value => {
-                const self = this;
                 return new Promise((resolve, reject) => {
-                    this.server.transactions()
+                    // this.server.transactions()
+                    this.server.operations()
                         .forAccount(cryptoBean.identifier)
                         .call()
                         .then(page => {
@@ -186,12 +337,53 @@ export default class StellarCrypto extends CryptoInterface {
                                 reject(this.error(`No transactions`));
                             } else {
                                 const transactions = [];
+                                const promises = [];
                                 for (let i = 0; i < page.records.length; i++) {
                                     const record = page.records[i];
-                                    transactions.push(new CryptoTransaction([cryptoBean.identifier], record.hash, Date.parse(record.created_at), record.fee_paid, record.fee_paid, record.fee_paid, record.operation_count, [record.source_account]));
+
+                                    const cryptoTransaction = new CryptoTransaction();
+
+                                    if (record['type'] === 'create_account') {
+                                        cryptoTransaction.source_addresses = [record.funder];
+                                        cryptoTransaction.dest_addresses = [record.account];
+                                        cryptoTransaction.type = 'create_account';
+                                        cryptoTransaction.amount_in = parseFloat(record.starting_balance);
+                                        cryptoTransaction.amount_out = parseFloat(record.starting_balance);
+                                    } else if (record['type'] === 'payment') {
+                                        cryptoTransaction.source_addresses = [record.from];
+                                        cryptoTransaction.dest_addresses = [record.to];
+                                        cryptoTransaction.type = 'payment';
+                                        cryptoTransaction.amount_in = parseFloat(record.amount);
+                                        cryptoTransaction.amount_out = parseFloat(record.amount);
+                                    }
+
+                                    cryptoTransaction.time = Date.parse(record.created_at);
+                                    cryptoTransaction.hash = record.transaction_hash;
+                                    promises.push(record.transaction()
+                                        .then(transaction => {
+                                            // this.log('-----TRANSACTION----');
+                                            // this.log(transaction);
+                                            cryptoTransaction.fee = transaction.fee_paid;
+                                            cryptoTransaction.confirmations = transaction.operation_count;
+                                        }).catch(reason => {
+                                            this.error(reason);
+                                        })
+                                        .finally(() => {
+                                            transactions.push(cryptoTransaction);
+                                        })
+                                    );
+
+
                                 }
                                 this.log(`Transactions retrieved`);
-                                resolve(transactions);
+                                Promise.all(promises).then(value1 => {
+                                    // this.log('--------CRYPTOTRANSACIONS-----');
+                                    // this.log(transactions);
+                                    resolve(transactions);
+                                }).catch(reason => {
+                                    this.error(reason);
+                                    reject(this.error(`Could not load transactions`));
+                                });
                             }
                         })
                         .catch(err => {
@@ -225,12 +417,12 @@ export default class StellarCrypto extends CryptoInterface {
             this.server
                 .loadAccount(wallet_address)
                 .then(account => {
-                    console.log(account);
+                    this.log(`Account loaded -> ${wallet_address}`);
                     resolve(account);
                 })
                 .catch(error => {
                     this.error(error);
-                    reject(`wallet is invalid`);
+                    reject(this.error(`wallet is invalid`));
                 });
         });
     }
@@ -272,6 +464,21 @@ export default class StellarCrypto extends CryptoInterface {
         } else {
             return Promise.reject(this.error(`bean not instance of CryptoBean`, true))
         }
+    }
+
+    /**
+     * Get balance with account
+     * @param account
+     * @returns {Promise<CryptoBalance>}
+     * @private
+     */
+    _getBalanceWithAccount(account) {
+        let balances = 0;
+        for (let i = 0; i < account.balances.length; i++) {
+            balances = parseFloat(account.balances[i].balance) + balances;
+        }
+
+        return Promise.resolve(new CryptoBalance(balances, 0));
     }
 
     static getName() {
