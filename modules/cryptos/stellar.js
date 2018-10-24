@@ -86,7 +86,7 @@ export default class StellarCrypto extends CryptoInterface {
                 this._createTestWallet(newAccount.publicKey(), newAccount.secret())
                     .then(value => {
                         this.log(`Wallet created`);
-                        resolve(new CryptoBean(newAccount.publicKey(), newAccount.secret()));
+                        resolve(new CryptoBean(newAccount.publicKey(), newAccount.secret(), {}));
                     })
                     .catch(reason => {
                         reject(this.error(`Wallet not created`));

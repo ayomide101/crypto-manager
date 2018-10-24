@@ -82,12 +82,11 @@ export default class BitcoinCrypto extends CryptoInterface {
                     network: "BTC",
                     testnet: true
                 });
+                resolve(true);
                 this._setupWebHook(baseurl)
                     .then(value => {
-                        resolve(true);
                     })
                     .catch(reason => {
-                        reject(reason);
                     });
             } catch (e) {
                 this.log(e, true);
@@ -193,6 +192,7 @@ export default class BitcoinCrypto extends CryptoInterface {
                     self.log(data);
                     self.log(generatePassPhrase);
                     self.log(name);
+                    console.log(data);
                     resolve(new CryptoBean(name, generatePassPhrase, data));
                 }
             });

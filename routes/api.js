@@ -10,7 +10,6 @@ Array.prototype.isEmpty = function () {
     return this.length <= 0;
 };
 
-
 const router = express.Router();
 const base_url = functions.getConfig('base_url');
 const user = new User();
@@ -59,6 +58,9 @@ router.get('/', function (req, res) {
 });
 
 
+/**
+ * Get user profile
+ */
 router.get('/user/profile', function (req, res) {
     user
         .getDetails(req.auth.uid)
@@ -70,6 +72,9 @@ router.get('/user/profile', function (req, res) {
         });
 });
 
+/**
+ * Update user information
+ */
 router.post('/user/update/info', function (req, res) {
     user
         .updateInfo(req.auth.uid, {
@@ -88,6 +93,9 @@ router.post('/user/update/info', function (req, res) {
         });
 });
 
+/**
+ * Update password
+ */
 router.post('/user/update/password', function (req, res) {
     log(`User trying to update`);
     const oldPassword = req.bodyString("oldPassword");
@@ -150,6 +158,94 @@ router.get('/wallet/friends', function (req, res) {
         }, function (error) {
             log(error, true);
             res.send(error);
+        });
+});
+
+/**
+ * Get wallet cryptos
+ */
+router.get('/wallet/cryptos', function (req, res) {
+    wallet
+        .getSupportedCryptos()
+        .then(function (response) {
+            log(response);
+            res.send(response);
+        }, function (error) {
+            log(error, true);
+            res.send(error);
+        });
+});
+
+/**
+ * Create wallet crytos
+ */
+router.get('/wallet/createWallet', function (req, res) {
+    wallet
+        .createWallet(req.auth.uid, req.bodyString("wallet"))
+        .then(function (response) {
+            log(response);
+            res.send(response);
+        }, function (error) {
+            log(error, true);
+            res.send(error);
+        });
+});
+
+/**
+ * Get wallets
+ */
+router.get('/wallet/getWallets', function(req, res) {
+    wallet.getWallets(req.auth.uid)
+        .then(function(response) {
+            log(response);
+            res.send(response);
+        })
+        .catch(reason => {
+            log(reason, true);
+            res.send(reason);
+        });
+});
+
+
+/**
+ * Get wallets
+ */
+router.get('/wallet/createAddress', function(req, res) {
+    wallet.createWalletAddress(req.auth.uid, req.bodyString("wallet"), req.bodyString("identifier"))
+        .then(function(response) {
+            log(response);
+            res.send(response);
+        })
+        .catch(reason => {
+            log(reason, true);
+            res.send(reason);
+        });
+});
+
+/**
+ * Prepare transaction for OTP confirmation
+ */
+router.post('/wallet/sendTransaction', function(req, res) {
+    wallet.sendMoneyToWallet(req.auth.uid, req.bodyString('crypto'), req.bodyString('crypto_address'), req.bodyFloat('amount'), req.bodyString("identifier"))
+        .then(function(response) {
+            log(response);
+            res.send(response);
+        })
+        .catch(reason => {
+            log(reason, true);
+            res.send(reason);
+        });
+});
+
+router.post('/wallet/confirmTransaction', function(req, res) {
+    wallet.confirmTransaction(req.auth.uid, req.bodyInt('otp'), req.bodyString("token"))
+        .then(function(response) {
+            log(response);
+            res.send(response);
+        })
+        .catch(reason => {
+            log(reason, true);
+            res.send(reason);
         });
 });
 

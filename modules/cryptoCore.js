@@ -47,7 +47,7 @@ export default class CryptoCore {
     /**
      * Crypto
      * @param name
-     * @returns CryptoInterface
+     * @returns {CryptoInterface}
      */
     static getCrypto(name) {
         return this.supported_cryptos[name];

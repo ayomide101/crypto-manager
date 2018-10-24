@@ -1,8 +1,8 @@
 
 export class CryptoBean {
-    identifier;
-    data;
-    passPhrase;
+    identifier; //In case of stellar, this is the public-key\wallet-address
+    data; //In case of bitcoin, this contains the recovery information
+    passPhrase; //The private key for the wallet
 
     constructor(identifier, passPhrase, data) {
         this.identifier = identifier;

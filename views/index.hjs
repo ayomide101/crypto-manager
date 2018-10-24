@@ -30,8 +30,7 @@
 			</div>
 		</div>
 
-		{{!-- Content
-		============================================= --}}
+		{{!-- Content ============================================= --}}
 		<section id="content">
 			<div id="splash-screen" class="css3-spinner">
 				<div class="css3-spinner-bounce1"></div>

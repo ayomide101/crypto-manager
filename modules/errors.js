@@ -19,8 +19,14 @@ export default class Error {
     static FRIEND_NOT_CREATED = {...Error.FAIL, code: 214, message: "Friend not created"};
     static INVALID_WALLET_ADDRESS = {...Error.FAIL, code: 215, message: "Invalid wallet address"};
     static FRIEND_NOT_DELETED = {...Error.FAIL, code: 216, message: "Friend not deleted"};
-    static WALLET_NOT_SUPPORTED = {...Error.FAIL, code:217, messasge: "Wallet not supported"};
-    static WEBHOOK_NOT_SUPPORTED = {...Error.FAIL, code:218, messasge: "Webhook not supported"};
+    static WALLET_NOT_SUPPORTED = {...Error.FAIL, code:217, message: "Wallet not supported"};
+    static WEBHOOK_NOT_SUPPORTED = {...Error.FAIL, code:218, message: "Webhook not supported"};
+    static WALLET_NOT_CREATED = {...Error.FAIL, code:219, message: "Wallet not created"};
+    static WALLET_NOT_IMPORTED = {...Error.FAIL, code:220, message: "Wallet not imported"};
+    static WALLETS_NOT_FOUND = {...Error.FAIL, code:221, message: "Wallet not imported"};
+    static WALLET_ADDRESS_NOT_CREATED = {...Error.FAIL, code:222, message: "Wallet address not created"};
+    static TRANSACTION_NOT_BE_CREATED = {...Error.FAIL, code:223, message: "Transaction not be created"};
+    static ACTIVATION_CODE_INVALID = {...Error.FAIL, code:224, message: "Activation code is invalid"};
 
     /**
      * Attaches

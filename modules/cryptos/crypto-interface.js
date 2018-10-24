@@ -20,6 +20,13 @@ export default class CryptoInterface {
 
     }
 
+    /**
+     *
+     * @param cryptoBean
+     * @param receiver_wallet_address
+     * @param amount
+     * @returns {null}
+     */
     sendTransaction(cryptoBean, receiver_wallet_address, amount) {
         return null;
     }

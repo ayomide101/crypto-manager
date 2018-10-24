@@ -1,6 +1,9 @@
 import crypto from "crypto";
+import * as QuickEncrypt from "quick-encrypt";
+import * as fs from "fs";
 
 export default class Functions {
+
     /**
      * GET DATA FROM CONFIG
      * get data from the config file <app-config.json> located in root directory
@@ -57,18 +60,17 @@ export default class Functions {
      * check user authentication(login) and render response based on login status
      */
     static dispatch = function (view_component, template_properties, req, res) {
-        const users = new require('./user-account');
-        const sessionId = Functions.getConfig('session.security').name;
-        users.checkLoggedIn(req.cookies[sessionId], function (loggedIn, status) {
+        // const users = new require('./user-account');
+        // const sessionId = Functions.getConfig('session.security').name;
+        // users.checkLoggedIn(req.cookies[sessionId], function (loggedIn, status) {
             template_properties.notLoggedIn = true;
-            if (loggedIn) {
-                users.resetTimeoutCount(req.cookies[sessionId]);
-                template_properties.loggedIn = true;
-                template_properties.notLoggedIn = false;
-            }
-            console.log(view_component);
+        //     if (loggedIn) {
+        //         users.resetTimeoutCount(req.cookies[sessionId]);
+        //         template_properties.loggedIn = false;
+        //         template_properties.notLoggedIn = true;
+            // }
             res.render(view_component, template_properties);
-        });
+        // });
     };
 
     /**
@@ -107,6 +109,74 @@ export default class Functions {
         // // console.log('Passwordhash = ' + passwordHash);
         // console.log('nSalt = ' + salt);
         return Functions.sha512(userpassword, salt);
+    }
+
+    static algorithm = 'aes-256-gcm';
+
+    // Part of https://github.com/chris-rock/node-crypto-examples
+    static encryptWithIV(text, password, iv) {
+        return new Promise((resolve, reject) => {
+            try {
+                const cipher = crypto.createCipheriv(Functions.algorithm, password, iv);
+                let encrypted = cipher.update(text, 'utf8', 'hex');
+                encrypted += cipher.final('hex');
+                const tag = cipher.getAuthTag();
+                resolve(encrypted+"/"+tag.toString('hex'));
+            } catch (e) {
+                reject(e);
+            }
+        });
+    }
+
+    static decryptWithIV(encrypted, password, iv) {
+        return new Promise((resolve, reject) => {
+            try {
+                const decipher = crypto.createDecipheriv(Functions.algorithm, password, iv);
+                const broken = encrypted.split("/");
+                const tag = Buffer.from(broken[1], 'hex');
+                const content = broken[0];
+
+                decipher.setAuthTag(tag);
+
+                let dec = decipher.update(content, 'hex', 'utf8');
+                dec += decipher.final('utf8');
+                resolve(dec);
+            } catch (e) {
+                reject(e);
+            }
+        });
+    }
+
+    /**
+     * Encrypt file with public key
+     * @param data
+     * @returns {Promise<any>}
+     */
+    static encryptWithPublicKey(data) {
+        return new Promise((resolve, reject) => {
+            try {
+                let publicKey = fs.readFileSync(Functions.getConfig('session.security').publickey, 'utf8');
+                resolve(QuickEncrypt.encrypt(data, publicKey));
+            } catch (e) {
+                reject(e);
+            }
+        });
+    }
+
+    /**
+     * Decrypt with private key
+     * @param data
+     * @returns {Promise<any>}
+     */
+    static decryptWithPrivateKey(data) {
+        return new Promise((resolve, reject) => {
+            try {
+                let privateKey = fs.readFileSync(Functions.getConfig('session.security').privatekey, 'utf8');
+                resolve(QuickEncrypt.decrypt(data, privateKey));
+            } catch (e) {
+                reject(e);
+            }
+        });
     }
 
     static isNull(da) {

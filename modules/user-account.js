@@ -523,7 +523,11 @@ export default class User {
                     resolve(Error.successError("User account activated"))
                 })
                 .catch(reason => {
-                    reject(reason);
+                    if (reason !== Error.ACCOUNT_NOT_ACTIVATED) {
+                        reject(Error.ACTIVATION_CODE_INVALID);
+                    } else {
+                        reject(reason);
+                    }
                 })
                 .finally(reason => {
                     dbInterface.close();
@@ -594,7 +598,7 @@ export default class User {
                                     })
                                 })
                                 .then(value => {
-                                    return Promise.resolve({jwtToken});
+                                    return Promise.resolve(jwtToken);
                                 })
                                 .catch(reason => {
                                     return Promise.reject(reason)

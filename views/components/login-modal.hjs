@@ -1,7 +1,8 @@
 <div id="login-screen" style="position: fixed;width: 100%;height: 100%;top: 0;left: 0;z-index: 1000;background-color: #ffffff;display: none;">
     <div class="block divcenter" style="max-width: 400px;">
         <div style="padding: 100px 50px 50px;">
-            <h3 class="font-body text-center">Login to your Account</h3>
+            <h1 class="text-center">CryptoManager</h1>
+            <h4 class="font-body text-center">Login</h4>
             <form id="login-form" method="post" class="nobottommargin">
                 <div class="col_full">
                     <label class="font-body capitalize" for="login-email">Email:</label>
@@ -12,7 +13,28 @@
                     <input type="password" id="login-password" name="login-password" class="sm-form-control" placeholder="password" required/>
                 </div>
                 <div class="col_full nobottommargin">
+                    <p class="text-right"><a id="register-submit-nav" class="text-right" name="register-submit">Create Account</a></p>
                     <button class="button button-rounded col_full fright nomargin" id="login-submit" name="login-submit" value="login">Login</button>
+                </div>
+                <div class="clearfix"></div>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="otp-screen" style="position: fixed;width: 100%;height: 100%;top: 0;left: 0;z-index: 1000;background-color: #ffffff;display: none;">
+    <div class="block divcenter" style="max-width: 400px;">
+        <div style="padding: 100px 50px 50px;">
+            <h1 class="text-center">CryptoManager</h1>
+            <h4 class="font-body text-center">Confirm LOGIN</h4>
+            <form id="otp-form" method="post" class="nobottommargin">
+                <p>An OTP has been sent to your email. Please enter code to confirm login</p>
+                <div class="col_full">
+                    <label class="font-body capitalize">Enter OTP</label>
+                    <input type="number" id="otp-input" name="otp" class="sm-form-control" placeholder="enter otp" required/>
+                </div>
+                <div class="col_full nobottommargin">
+                    <p class="text-right"><a class="text-right login-submit-nav" name="login-submit">Login</a></p>
+                    <button class="button button-rounded col_full fright nomargin" id="otp-submit" name="login-submit" value="Confirm OTP">Confirm OTP</button>
                 </div>
                 <div class="clearfix"></div>
             </form>
