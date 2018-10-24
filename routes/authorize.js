@@ -1,6 +1,8 @@
 import functions from "../modules/functions";
 import express from "express";
 import User from "../modules/user-account";
+import {UnauthorizedError} from "express-jwt";
+import Error from "../modules/errors"
 
 
 const router = express.Router();
@@ -17,8 +19,32 @@ router.post('/login/2fa', function (req, res) {
             res.send(response)
         }, function (err) {
             // console.log(err);
-            res.send(err)
+            res.send(err);
         });
+});
+
+/**
+ * Check if a jwt is still valid
+ */
+router.post('/login/status', function (req, res) {
+    let token = req.bodyString('jwt');
+    let jwt = require('jsonwebtoken');
+    const d  = new UnauthorizedError('revoked_token', {message: 'The token has been revoked.'});
+    try {
+        let dtoken = jwt.decode(token, { complete: true }) || {};
+        const {jti, iss} =dtoken.payload;
+        user.getRevokedToken(iss, jti, function (err, isRev) {
+            if (err) {
+                req.status(401);
+                res.send(d);
+            } else {
+                res.send(Error.successError("Still login"));
+            }
+        });
+    } catch (err) {
+        req.status(401);
+        res.send(d);
+    }
 });
 
 /**
