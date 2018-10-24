@@ -432,7 +432,7 @@ export default class User {
 
                     const from = `Support <${this.mailer.options.auth.user}>`;
                     const mailSubject = "Welcome To CryptoManager";
-                    const url = `${Functions.getConfig('base_url')}api/activate?code=${activation_code}`;
+                    const url = `${Functions.getConfig('base_url')}authorize/activate?code=${activation_code}`;
                     const mailBody = `
                     Welcome ${name},<br/>
                     Kindly activate your account using this link ${url}<br/>
