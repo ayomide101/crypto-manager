@@ -27,6 +27,10 @@ export default class Error {
     static WALLET_ADDRESS_NOT_CREATED = {...Error.FAIL, code:222, message: "Wallet address not created"};
     static TRANSACTION_NOT_BE_CREATED = {...Error.FAIL, code:223, message: "Transaction not be created"};
     static ACTIVATION_CODE_INVALID = {...Error.FAIL, code:224, message: "Activation code is invalid"};
+    static NO_MONEY_IN_WALLET = {...Error.FAIL, code: 225, message:"Not enough money in wallet"};
+    static TRANSACTION_NOT_SENT = {...Error.FAIL, code: 226, message:"Transaction not sent"};
+    static NO_MATCHING_TRANSACTION = {...Error.FAIL, code: 227, message:"No matching transaction"};
+
 
     /**
      * Attaches

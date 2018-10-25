@@ -454,4 +454,9 @@ export default class BitcoinCrypto extends CryptoInterface {
     static getName() {
         return "bitcoin";
     }
+
+
+    getCurrency() {
+        return "BTC";
+    }
 }

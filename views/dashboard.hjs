@@ -1,0 +1,99 @@
+{{> header }}
+
+<div id="loading" class="css3-spinner hide" style="position: absolute;">
+    <div class="css3-spinner-bounce1"></div>
+    <div class="css3-spinner-bounce2"></div>
+    <div class="css3-spinner-bounce3"></div>
+</div>
+
+{{> loginModal }}
+
+{{> registerModal }}
+
+{{> noConnection }}
+
+<div class="modal fade in" id="modal-history" data-backdrop="static" tabindex="-1" role="dialog"
+     aria-labelledby="requestModalLabel" aria-hidden="true">
+    <button class="mfp-close" title="Close (Esc)" type="button" data-dismiss="modal">&times;</button>
+    <div class="vertical-alignment-helper">
+        <div class="modal-dialog modal-lg vertical-align-center">
+            <div class="modal-content">
+                <div class="modal-body" style="min-height: 400px;">
+                    <div id="history-loading" class="css3-spinner" style="position: absolute;">
+                        <div class="css3-spinner-bounce1"></div>
+                        <div class="css3-spinner-bounce2"></div>
+                        <div class="css3-spinner-bounce3"></div>
+                    </div>
+                    <div id="request-history"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        margin: auto;
+        border-radius: 4px;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+        border-left: 1px solid #eee;
+        border-top: 1px solid #eee;
+        display: flex;
+        padding: 15px;
+        flex-direction: column;
+        justify-content: center;
+        align-content: center;
+    }
+</style>
+
+{{!-- Content ============================================= --}}
+<section id="content">
+    <div id="splash-screen" class="css3-spinner hide">
+        <div class="css3-spinner-bounce1"></div>
+        <div class="css3-spinner-bounce2"></div>
+        <div class="css3-spinner-bounce3"></div>
+    </div>
+    <div class="content-wrap">
+        {{!-- App Content
+        ============================================= --}}
+        <div ng-app="request-app">
+            <div ng-view>
+                <div style="padding:35px;">
+                    <h3 class="font-body">Wallets</small></h3>
+                    <div class="row">
+                        <div class="col-md-8" id="wallets-holder"></div>
+                        <div class="col-md-4">
+                            <h4>CREATE WALLET</h4>
+                            <form name="createWallet" class="nobottommargin">
+                                <div class="col_full">
+                                    <label for="wallet_type">Wallet Type
+                                        <small>*</small>
+                                    </label>
+                                    <select id="wallet_type" name="wallet_type" class="sm-form-control required">
+                                        {{#supportedCryptos}} <option value="{{name}}">{{name}} - {{currency}}</option>{{/supportedCryptos}}
+                                    </select>
+                                </div>
+
+                                <div class="divider divider-center nomargin"><i class="icon-circle"
+                                                                                style="color: #aaaaaa;"></i></div>
+                                <div class="clear"></div>
+
+                                <div class="col_full nobottommargin text-right" style="margin-top: 30px;">
+                                    <button name="submit" type="submit" id="submit-button" tabindex="5"
+                                            class="button button-3d nomargin">Create Wallet
+                                    </button>
+                                </div>
+
+                                <div class="clear"></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>{{!-- #content end --}}
+
+{{> footer }}
+<div style="padding: 35px;">

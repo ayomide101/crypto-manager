@@ -327,7 +327,7 @@ app.controller('AppCtrl', ['$scope', '$httpRequest', '$location', '$loadingBar',
             switch (resp.data.error) {
                 case 200:
                     $loadingBar.show();
-                    $location.path("/dispatch-request");
+                    // $location.path("/dispatch-request");
                     break;
                 default:
                     $dataStorage.clearStorage();

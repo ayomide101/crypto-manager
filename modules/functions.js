@@ -92,6 +92,8 @@ export default class Functions {
      * @param {string} salt - Data to be validated.
      */
     static sha512(password, salt) {
+        console.log(password);
+        console.log(salt);
         const hash = crypto.createHmac('sha512', salt);
         /** Hashing algorithm sha512 */
         hash.update(password);

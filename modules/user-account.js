@@ -678,8 +678,8 @@ export default class User {
             return Promise.resolve(Error.errorResponse(Error.INVALID_DATA, {uid: "uid cannot be null"}));
         } else {
             return this.getDetails(uid).then(user => {
-                if (user.status === "activated") {
-                    return Promise.resolve(user);
+                if (user.data.status === "activated") {
+                    return Promise.resolve(user.data);
                 } else {
                     return Promise.reject(Error.ACCOUNT_BLOCKED);
                 }

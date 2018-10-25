@@ -54,15 +54,15 @@
 					{{! Logo
 					============================================= }}
 					<div id="logo" {{{ logo_property }}}>
-						<a href="{{ base_url }}" class="standard-logo" data-dark-logo="{{ base_url }}images/{{ logo_dark }}.png"><img {{{ logo_property }}} src="{{ base_url }}images/{{ logo }}.png" alt="cryptomanager Business Logo"></a>
-						<a href="{{ base_url }}" class="retina-logo" data-dark-logo="{{ base_url }}images/{{ logo_dark }}@2x.png"><img src="{{ base_url }}images/{{ logo }}@2x.png" alt="cryptomanager Business Logo"></a>
+					    <a href=""{{ base_url}}"><h4>CryptoManager</h4></a>
 					</div>{{! #logo end }}
 				{{#default_menu}}
 					{{! Primary Navigation
 					============================================= }}
 					<nav id="primary-menu">
 						<ul>
-							<li><a href="#/dispatch-request"><div>Dispatch</div><i class="icon-angle-right" style="position:absolute;top:1px;right:0"></i></a></li>
+							<li><a href="#/dashboard"><div>Wallets</div><i class="icon-angle-right" style="position:absolute;top:1px;right:0"></i></a></li>
+							<li><a href="#/transactions"><div>Transactions</div><i class="icon-angle-right" style="position:absolute;top:1px;right:0"></i></a></li>
                             <li><a href="#/request-history"><div>History</div><i class="icon-angle-right" style="position:absolute;top:1px;right:0"></i></a></li>
                             <li><a href="#/profile"><div>Profile</div><i class="icon-angle-right" style="position:absolute;top:1px;right:0"></i></a></li>
                             <li><a href="#/app-settings"><div>Settings</div><i class="icon-angle-right" style="position:absolute;top:1px;right:0"></i></a></li>
@@ -90,4 +90,5 @@
 				{{/default_menu}}
 				</div>
 			</div>
-		</header>{{! #header end }}
+		</header>
+        {{! #header end }}

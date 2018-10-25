@@ -179,7 +179,7 @@ router.get('/wallet/cryptos', function (req, res) {
 /**
  * Create wallet crytos
  */
-router.get('/wallet/createWallet', function (req, res) {
+router.post('/wallet/createWallet', function (req, res) {
     wallet
         .createWallet(req.auth.uid, req.bodyString("wallet"))
         .then(function (response) {
@@ -210,7 +210,7 @@ router.get('/wallet/getWallets', function(req, res) {
 /**
  * Get wallets
  */
-router.get('/wallet/createAddress', function(req, res) {
+router.post('/wallet/createAddress', function(req, res) {
     wallet.createWalletAddress(req.auth.uid, req.bodyString("wallet"), req.bodyString("identifier"))
         .then(function(response) {
             log(response);

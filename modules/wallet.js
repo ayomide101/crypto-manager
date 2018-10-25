@@ -92,6 +92,11 @@ export default class Wallet {
                 return Promise.resolve(Error.successError("Confirm transaction with OTP", {token:hashToken}));
             })
             .catch(reason => {
+                if (reason === "wallet is invalid") {
+                    return Promise.reject(Error.INVALID_WALLET_ADDRESS);
+                } else if (reason === "Not enough money in wallet") {
+                    return Promise.reject(Error.NO_MONEY_IN_WALLET);
+                }
                 return Promise.reject(reason);
             })
     }
@@ -138,6 +143,9 @@ export default class Wallet {
                 db
                     .select(Wallet.transaction_table, {uid, hashToken: token, status:'pending'})
                     .then(transactions => {
+                        if (transactions.length <= 0) {
+                            return Promise.reject(Error.NO_MATCHING_TRANSACTION);
+                        }
                         const {
                             uid,
                             wallet_type, tokenSecret, crypto_address, amount, identifier } = transactions[0];
@@ -170,15 +178,21 @@ export default class Wallet {
                                     return Promise.resolve(Error.successError("Transaction sent", cryptoTransaction));
                                 })
                                 .catch(reason => {
+                                    if (reason === "Not enough money in wallet") {
+                                        return Promise.reject(Error.NO_MONEY_IN_WALLET);
+                                    }
+                                    if (reason.indexOf("amount") !== -1) {
+                                        return Promise.reject(Error.errorResponse(Error.INVALID_DATA, {amount: reason}));
+                                    }
+                                    if (reason === "Could not send transaction") {
+                                        return Promise.reject(Error.TRANSACTION_NOT_SENT);
+                                    }
                                     return Promise.reject(reason)
                                 });
                         } else {
                             console.error('Incorrect OTP');
                             return Promise.reject(Error.INCORRECT_OTP);
                         }
-                    })
-                    .then(hash => {
-                        resolve(Error.successError("Logged In. Add JWT to Header as `Authorization: Bearer {token}`", {token: hash}))
                     })
                     .catch(reason => {
                         console.log(reason);
@@ -200,11 +214,10 @@ export default class Wallet {
         const tokenSecret = uuidv4();
         const otp = totp.generate(tokenSecret);
         //Token can be used to generate another OTP
-        const hashToken = Functions.sha512(tokenSecret, user.salt);
-        const self = this;
+        const hashToken = Functions.sha512(tokenSecret, Functions.genRandomString(16));
 
-        return db.insert({
-            uid, hashToken, tokenSecret, created_on: new Date().toISOString(),
+        return db.insert(Wallet.transaction_table, {
+            uid, hashToken:hashToken.passwordHash, tokenSecret, created_on: new Date().toISOString(),
             identifier, wallet_type, crypto_address, amount, status:"pending"
         })
             .then(value => {
@@ -290,6 +303,12 @@ export default class Wallet {
             })
             .then(value => {
                 this.log(`Wallet created successfully`);
+                //Remove sensitive
+                delete mWallet["encryptedPassPhrase"];
+                delete mWallet["encryptedData"];
+                delete mWallet["encryptedUnlockIV"];
+                delete mWallet["encryptedUnlockKey"];
+
                 return Promise.resolve(Error.successError("Wallet created", mWallet));
             })
             .catch(reason => {
@@ -528,6 +547,12 @@ export default class Wallet {
             });
     }
 
+    getWalletAddresses(uid, identifier) {
+        const db = new Database();
+
+        return db.select(Wallet.address_table, {uid, identifier});
+    }
+
 
     _getWallets(uid, sanitize, identifier) {
         let data = {uid};
@@ -548,40 +573,47 @@ export default class Wallet {
                     for (let i = 0; i < wallets.length; i++) {
                         let wallet = wallets[i];
 
-                        if (sanitize) {
-                            delete wallet["encryptedPassPhrase"];
-                            delete wallet["encryptedData"];
-                            delete wallet["encryptedUnlockIV"];
-                            delete wallet["encryptedUnlockKey"];
-                        }
-
                         let mCryptoBean;
+                        console.log(`Get balance`);
                         promises.push(this.createCryptoBeanFromEncryptedWallet(wallet)
                             .then(cryptoBean => {
                                 mCryptoBean = cryptoBean;
                                 return this.getCrypto(wallet.crypto_type);
                             })
                             .then(crypto => {
+                                console.log(`Get balance`);
                                 return crypto.getBalance(mCryptoBean);
                             })
                             .then(value => {
                                 wallet.balance = value;
+                                return this.getWalletAddresses(uid, wallet.identifier);
+                            })
+                            .then(addresses => {
+                                wallet.addresses = addresses;
                             })
                             .catch(reason => {
-
+                                wallet.balance = {confirmedBalance:0.0, unconfirmedBalance:0.0};
+                                wallet.addresses = [];
+                            }).finally(() => {
+                                if (sanitize) {
+                                    delete wallet["encryptedPassPhrase"];
+                                    delete wallet["encryptedData"];
+                                    delete wallet["encryptedUnlockIV"];
+                                    delete wallet["encryptedUnlockKey"];
+                                }
                             }));
 
                     }
                     return new Promise((resolve, reject) => {
                         Promise.all(promises)
                             .then(value => {
-
+                                return resolve(wallets);
                             })
                             .catch(reason => {
 
                             })
                             .finally(() => {
-                                return resolve(wallets);
+
                             });
                     });
                 } else {
@@ -597,7 +629,9 @@ export default class Wallet {
     }
 
     getWallets(uid) {
-        return this._getWallets(uid, true);
+        return this._getWallets(uid, true).then(value => {
+            return Error.successError("Wallets", value);
+        });
     }
 
     /**
@@ -651,6 +685,7 @@ export default class Wallet {
      */
     createWalletAddress(uid, crypto, identifier) {
         let mCrypto;
+        let mCryptoAddres;
         const db = new Database();
         return this.users.isUserValid(uid)
             .then(user => {
@@ -669,6 +704,7 @@ export default class Wallet {
                 return mCrypto.createWalletAddress(cryptoBean);
             })
             .then(cryptoAddress => {
+                mCryptoAddres= cryptoAddress;
                 return db.insert(Wallet.address_table, {
                     uid,
                     crypto,
@@ -677,8 +713,8 @@ export default class Wallet {
                     address: cryptoAddress.address
                 });
             })
-            .then(cryptoAddress => {
-                return Promise.resolve(Error.successError("Wallet created", cryptoAddress));
+            .then(result => {
+                return Promise.resolve(Error.successError("Wallet address created", mCryptoAddres));
             })
             .catch(reason => {
                 return Promise.reject(Error.WALLET_ADDRESS_NOT_CREATED);
@@ -709,7 +745,8 @@ export default class Wallet {
      * Return the list of supported cryptos
      */
     getSupportedCryptos() {
-        return Error.errorResponse("Supported cryptos", CryptoInterface.supported_cryptos);
+        console.log(CryptoCore.supported_cryptos);
+        return Error.successError("Supported cryptos", CryptoCore.supported_cryptos);
     }
 
     log(message, error) {

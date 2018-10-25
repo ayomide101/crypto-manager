@@ -55,6 +55,10 @@ export default class CryptoInterface {
         return false;
     }
 
+    getCurrency() {
+        return "";
+    }
+
     static getName() {
         return null;
     }

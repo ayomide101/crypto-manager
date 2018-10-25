@@ -186,6 +186,46 @@ $("#register-form").submit(function (event) {
     });
 });
 
+$('[name="createWallet"]').submit(function (event) {
+    event.preventDefault();
+
+    var self = $(this);
+
+    var submitButton = self.find('[type="submit"]');
+    $(submitButton).html("Loading...");
+    $(submitButton).prop("disabled", true);
+
+    var errorFunc = function (message) {
+        toast(message, "error", 7000);
+        $(submitButton).html("Login");
+        $(submitButton).prop("disabled", false);
+    };
+
+    $.ajax({
+        url: apiUrl + "/api/wallet/createWallet",
+        type: 'post',
+        data: {
+            wallet: self.find('[name="wallet_type"]').val()
+        },
+        headers: {
+            "Authorization": "Bearer " + localStorage.getItem("jwt")
+        },
+        dataType: 'json',
+        success: function (result) {
+            if (result.status) {
+                toast(result.message, "success", 10000);
+                dashBoard();
+            } else {
+                var message = (result.message && result.message != "undefined") ? result.message : "Login failed. Check connection";
+                errorFunc(message);
+            }
+        },
+        error: function () {
+            errorFunc("Login failed. Check connection");
+        }
+    });
+});
+
 var updateProfile = function (params) {
     var submitButton = "#profile-submit";
     $(submitButton).html("Updating...");
@@ -312,12 +352,129 @@ $(document).ready(function () {
     });
 });
 
+getCurrency = function (type) {
+    if (type === "bitcoin") {
+        return "BTC";
+    } else {
+        return "LUM";
+    }
+};
+
+dashBoard = function () {
+    $.ajax({
+        url: apiUrl + "/api/wallet/getWallets",
+        type: 'get',
+        headers: {
+            "Authorization": "Bearer " + localStorage.getItem("jwt")
+        },
+        dataType: 'json',
+        success: function (result) {
+            if (result.status) {
+                toast(result.message, "success", 10000);
+                var d = $('#wallets-holder');
+                d.empty(); //REmove all elements
+
+                console.log(result.data);
+                for (let i = 0; i < result.data.length; i++) {
+                    const wallet = result.data[i];
+
+                    let address = "";
+                    address = "<h4 class='nomargin text-left'>public addresses</h4>";
+                    if (wallet["addresses"] !== undefined && wallet.addresses.length > 0) {
+                        for (let j = 0; j < wallet.addresses.length; j++) {
+                            console.log(wallet.addresses[i]);
+                            try {
+                                address += `<p class="nomargin">address: ${wallet.addresses[j].address}</p>`;
+                                address += `<p class="nomargin" style="margin-bottom: 4px; border-bottom: 1px solid #ccc;">date: ${new Date(Date.parse(wallet.addresses[j].created_on)).toDateString()}</p>`;
+                            } catch (e) {
+                                console.log(e);
+                            }
+                        }
+                    } else {
+                        address += "<p class='nomargin text-center'><i>No public address</i></p>";
+                    }
+
+                    let walletHTML = `<div class="col-md-6" style="padding: 5px;">
+                                <div class="card">
+                                                                <h4 class="nomargin text-left uppercase"><a href="/wallet/${wallet.identifier}">${wallet.crypto_type}</a></h4>
+                                <h4 class="nomargin text-left">id: ${wallet.identifier}</h4>
+                                <h4 class="nomargin text-left">date:  ${new Date(Date.parse(wallet.created_on)).toDateString()}</h4>
+                                <hr/>
+                                ${address}
+                                <hr/>
+                                <h4 class="nomargin text-right">confirmed: ${wallet.balance.confirmedBalance} ${getCurrency(wallet.crypto_type)}</h4>
+                                <h4 class="nomargin text-right">unconfirmed: ${wallet.balance.confirmedBalance} ${getCurrency(wallet.crypto_type)}</h4>
+                                <button class="button button-rounded col_full fright nomargin" name="create-address" value="login">CREATE PUBLIC ADDRESS</button>
+                                
+</div>
+                            </div>`;
+
+                    walletHTML = $(walletHTML);
+
+                    walletHTML.find('[name="create-address"]').click(function (e) {
+                        var submitButton = $(this);
+                        $(submitButton).html("Loading...");
+                        $(submitButton).prop("disabled", true);
+
+                        var errorFunc = function (message) {
+                            toast(message, "error", 7000);
+                            $(submitButton).html("Login");
+                            $(submitButton).prop("disabled", false);
+                        };
+                        $.ajax({
+                            url: apiUrl + "/api/wallet/createAddress",
+                            type: 'post',
+                            headers: {
+                                "Authorization": "Bearer " + localStorage.getItem("jwt")
+                            },
+                            dataType: 'json',
+                            data: {
+                                wallet: wallet.crypto_type,
+                                identifier: wallet.identifier
+                            },
+                            success: function (result) {
+                                if (result.status) {
+                                    toast(result.message, "success", 10000);
+
+                                    setTimeout(function () {
+                                        window.location.replace('/dashboard');
+                                    }, 600);
+                                } else {
+                                    var message = (result.message && result.message != "undefined") ? result.message : "Login failed. Check connection";
+                                    errorFunc(message);
+                                }
+                            },
+                            error: function () {
+                                errorFunc("Check connection");
+                            }
+                        });
+                    });
+
+                    d.append(walletHTML);
+                }
+            } else {
+                var message = (result.message && result.message != "undefined") ? result.message : "Login failed. Check connection";
+                toast(message, "error", 10000);
+            }
+        },
+        error: function () {
+            toast("Check connection", "error", 7000);
+        }
+    });
+};
+
 $(document).ready(function () {
     try {
         console.log('Jquery still works');
         const jwt = window.localStorage.getItem("jwt");
+        console.log(window.location);
         if (jwt) {
-            window.location = "/dashboard"
+            if (window.location.pathname === "/" || window.location.pathname === "/login") {
+                window.location = "/dashboard"
+            }
+            if (window.location.pathname === "/dashboard") {
+                dashBoard();
+            }
         } else {
             overlays.hideAll();
             overlays.showScreen('login-screen');

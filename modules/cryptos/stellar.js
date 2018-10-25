@@ -484,4 +484,9 @@ export default class StellarCrypto extends CryptoInterface {
     static getName() {
         return "stellar";
     }
+
+
+    getCurrency() {
+        return "LUM";
+    }
 }
