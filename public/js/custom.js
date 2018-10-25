@@ -384,8 +384,8 @@ dashBoard = function () {
                         for (let j = 0; j < wallet.addresses.length; j++) {
                             console.log(wallet.addresses[i]);
                             try {
-                                address += `<p class="nomargin">address: ${wallet.addresses[j].address}</p>`;
-                                address += `<p class="nomargin" style="margin-bottom: 4px; border-bottom: 1px solid #ccc;">date: ${new Date(Date.parse(wallet.addresses[j].created_on)).toDateString()}</p>`;
+                                address += `<p class="nomargin" style="overflow-wrap: break-word;">address: ${wallet.addresses[j].address}</p>`;
+                                address += `<p class="nomargin" style="overflow-wrap: break-word; margin-bottom: 4px; border-bottom: 1px solid #ccc;">date: ${new Date(Date.parse(wallet.addresses[j].created_on)).toDateString()}</p>`;
                             } catch (e) {
                                 console.log(e);
                             }
@@ -396,9 +396,9 @@ dashBoard = function () {
 
                     let walletHTML = `<div class="col-md-6" style="padding: 5px;">
                                 <div class="card">
-                                                                <h4 class="nomargin text-left uppercase"><a href="/wallet/${wallet.identifier}">${wallet.crypto_type}</a></h4>
-                                <h4 class="nomargin text-left">id: ${wallet.identifier}</h4>
-                                <h4 class="nomargin text-left">date:  ${new Date(Date.parse(wallet.created_on)).toDateString()}</h4>
+                                 <h4 class="nomargin text-left uppercase" style="overflow-wrap: break-word;"><a href="/wallet/${wallet.identifier}">${wallet.crypto_type}</a></h4>
+                                <h4 class="nomargin text-left" style="overflow-wrap: break-word;">id: ${wallet.identifier}</h4>
+                                <h4 class="nomargin text-left" style="overflow-wrap: break-word;">date:  ${new Date(Date.parse(wallet.created_on)).toDateString()}</h4>
                                 <hr/>
                                 ${address}
                                 <hr/>
