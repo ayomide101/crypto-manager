@@ -224,7 +224,7 @@ router.get('/wallet/getTransactions', function(req, res) {
 
 
 /**
- * Get wallets
+ * Create Wallet Address
  */
 router.post('/wallet/createAddress', function(req, res) {
     wallet.createWalletAddress(req.auth.uid, req.bodyString("wallet"), req.bodyString("identifier"))
@@ -253,6 +253,9 @@ router.post('/wallet/sendTransaction', function(req, res) {
         });
 });
 
+/**
+ * Confirm transaction with OTP
+ */
 router.post('/wallet/confirmTransaction', function(req, res) {
     wallet.confirmTransaction(req.auth.uid, req.bodyString('otp'), req.bodyString("token"))
         .then(function(response) {

@@ -424,18 +424,22 @@ export default class BitcoinCrypto extends CryptoInterface {
                                 const d = [];
                                 for (let i = 0; i < transactions.data.length; i++) {
                                     const transaction = transactions.data[i];
-                                    console.log('---INPUT---');
-                                    console.log(transaction.inputs); //Destination funds
-                                    console.log('---OUTPUT---');
-                                    console.log(transaction.outputs); //Source funds
-                                    console.log('---WALLET---');
-                                    console.log(transaction.wallet);
+                                    // console.log('---INPUT---');
+                                    // console.log(transaction.inputs); //Destination funds
+                                    // console.log('---OUTPUT---');
+                                    // console.log(transaction.outputs); //Source funds
+                                    // console.log('---WALLET---');
+                                    // console.log(transaction.wallet);
 
                                     let outputs = [];
                                     for (let j = 0; j < transaction.outputs.length; j++) {
                                         outputs.push(transaction.outputs[j].address);
                                     }
-                                    d.push(new CryptoTransaction(transaction.dest_addresses, transaction.hash,
+                                    let inputs = [];
+                                    for (let j = 0; j < transaction.inputs.length; j++) {
+                                        inputs.push(transaction.inputs[j].address);
+                                    }
+                                    d.push(new CryptoTransaction(inputs, transaction.hash,
                                         transaction.time, self._toBtc(transaction.total_fee), self._toBtc(transaction.total_input_value), self._toBtc(transaction.total_output_value), transaction.confirmations, outputs));
                                 }
                                 resolve(d);

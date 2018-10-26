@@ -3,8 +3,14 @@ import uuidv4 from "uuid/v4";
 import Wallet from "../modules/wallet";
 import {expect} from "chai";
 import {CryptoBean} from "../modules/cryptos/cryptostruct";
+import CryptoCore from "../modules/cryptoCore";
 
 describe('wallet test', function () {
+
+    before(() => {
+        CryptoCore.initCryptos("http:/127.0.0.1");
+    });
+
     const bean = new CryptoBean(
         'cryptomanager-test-wallet-1',
         'b23446729680878c2f053ecdec6c054a6d6fadda1b114784bbafe1ba64925a175248b4616acae9cec2bc00fb2e9948ee2caee18cc65d915d59851a13ed458878',
@@ -44,19 +50,31 @@ describe('wallet test', function () {
         });
     });
 
-    // describe('get wallets', function () {
-    //     const wallet = new Wallet();
-    //     it('should pass all config', async () => {
-    //         try {
-    //             const encryptedWallet = await wallet.getWallets(uuidv4(), 'bitcoin', bean);
-    //             console.log(result);
-    //             expect(result).to.be.instanceOf(CryptoBean);
-    //             expect(result.passPhrase).to.equal(bean.passPhrase);
-    //             expect(result.identifier).to.equal(bean.identifier);
-    //         } catch (e) {
-    //             console.log(e);
-    //             expect(e).to.be.an("undefined");
-    //         }
-    //     });
-    // });
+    describe('get wallets', function () {
+        const wallet = new Wallet();
+        it('should pass', async () => {
+            try {
+                const encryptedWallet = await wallet.getWallets("7b635411-bf89-4706-a5e8-60e4893ee360");
+                console.log(result);
+                expect(result).to.be.an('array');
+            } catch (e) {
+                console.log(e);
+                expect(e).to.be.an("undefined");
+            }
+        });
+    });
+
+    describe('get transactions', function () {
+        const wallet = new Wallet();
+        it('should pass all config', async () => {
+            try {
+                const result = await wallet.getTransactions("7b635411-bf89-4706-a5e8-60e4893ee360");
+                console.log(result);
+                expect(result).to.be.an('object');
+            } catch (e) {
+                console.log(e);
+                expect(e).to.be.an("undefined");
+            }
+        });
+    });
 });

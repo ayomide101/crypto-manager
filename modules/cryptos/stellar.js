@@ -380,7 +380,7 @@ export default class StellarCrypto extends CryptoInterface {
 
 
                                 }
-                                this.log(`Transactions retrieved`);
+                                this.log(`Stellar transactions retrieved`);
                                 Promise.all(promises).then(value1 => {
                                     // this.log('--------CRYPTOTRANSACIONS-----');
                                     // this.log(transactions);

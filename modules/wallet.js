@@ -89,7 +89,7 @@ export default class Wallet {
                 return this._storeTransactionForOTP(uid, mUser, db, crypto_type, crypto_address, amount, identifier)
             })
             .then(hashToken => {
-                return Promise.resolve(Error.successError("Confirm transaction with OTP", {token:hashToken}));
+                return Promise.resolve(Error.successError("Confirm transaction with OTP", {token: hashToken}));
             })
             .catch(reason => {
                 if (reason === "wallet is invalid") {
@@ -141,14 +141,15 @@ export default class Wallet {
                 const db = new Database();
                 console.log(`Searching for user with matching hashToken ->user::${uid} && token::${token}`);
                 db
-                    .select(Wallet.transaction_table, {uid, hashToken: token, status:'pending'})
+                    .select(Wallet.transaction_table, {uid, hashToken: token, status: 'pending'})
                     .then(transactions => {
                         if (transactions.length <= 0) {
                             return Promise.reject(Error.NO_MATCHING_TRANSACTION);
                         }
                         const {
                             uid,
-                            wallet_type, tokenSecret, crypto_address, amount, identifier } = transactions[0];
+                            wallet_type, tokenSecret, crypto_address, amount, identifier
+                        } = transactions[0];
 
                         console.log(`Database transaction data -> ${JSON.stringify(transactions[0])}`);
 
@@ -177,7 +178,7 @@ export default class Wallet {
                                 .then(cryptoTransaction => {
                                     //Updating transaction
                                     this.log(`Updating state of transaction`);
-                                    db.update(Wallet.transaction_table, {hashToken: token}, {status:'finished'});
+                                    db.update(Wallet.transaction_table, {hashToken: token}, {status: 'finished'});
                                     return Promise.resolve(Error.successError("Transaction sent", cryptoTransaction));
                                 })
                                 .catch(reason => {
@@ -224,8 +225,8 @@ export default class Wallet {
         const hashToken = Functions.sha512(tokenSecret, Functions.genRandomString(16));
 
         let data = {
-            uid, hashToken:hashToken.passwordHash, tokenSecret, created_on: new Date().toISOString(),
-            identifier, wallet_type, crypto_address, amount: parseFloat(amount), status:"pending"
+            uid, hashToken: hashToken.passwordHash, tokenSecret, created_on: new Date().toISOString(),
+            identifier, wallet_type, crypto_address, amount: parseFloat(amount), status: "pending"
         };
 
         this.log(`Transaction data -> ${JSON.stringify(data)}`);
@@ -387,6 +388,7 @@ export default class Wallet {
      * @returns {Promise<CryptoBean | never>}
      */
     createCryptoBeanFromEncryptedWallet(wallet) {
+        this.log(`Wallet to Bean -> ${wallet.identifier}`);
         const {
             identifier,
             encryptedPassPhrase,
@@ -415,6 +417,7 @@ export default class Wallet {
             })
             .then(deData => {
                 cryptoBean.data = JSON.parse(deData);
+                this.log(`Wallet to Bean successful`);
                 return Promise.resolve(cryptoBean);
             })
             .catch(reason => Promise.reject(reason));
@@ -472,9 +475,47 @@ export default class Wallet {
     /**
      * Transactions in crypto
      * @param uid
-     * @param crypto
      */
-    getTransactions(uid, crypto) {
+    getTransactions(uid) {
+        this.log(`Get transactions for -> ${uid}`);
+        return this._getWallets(uid, false, null, false)
+            .then(wallets => {
+                if (wallets.length <= 0) {
+                    return Promise.reject(Error.WALLETS_NOT_FOUND);
+                } else {
+                    const promises = [];
+                    let transactions = [];
+                    for (let i = 0; i < wallets.length; i++) {
+                        const wallet = wallets[i];
+                        let mCrypto;
+
+                        promises.push(this.getCrypto(wallet.crypto_type)
+                            .then(crypto => {
+                                mCrypto = crypto;
+                                return this.createCryptoBeanFromEncryptedWallet(wallet);
+                            })
+                            .then(cryptoBean => {
+                                this.log(`Retrieving transaction for -> ${cryptoBean.identifier}`);
+                                return mCrypto.getTransactions(cryptoBean);
+                            })
+                            .then(mTransactions => {
+                                //Concatenate transactions
+                                transactions = transactions.concat(mTransactions);
+                                return Promise.resolve(true);
+                            })
+                            .catch(reason => {
+                                this.error(reason);
+                                //We don't want the promises to fail cause any promise fails
+                            })
+                        );
+                    }
+
+                    return Promise.all(promises)
+                        .then(result => {
+                            return Promise.resolve(Error.successError("Transactions", transactions));
+                        });
+                }
+            });
     }
 
     /**
@@ -494,6 +535,7 @@ export default class Wallet {
      * @returns {Promise<CryptoInterface>}
      */
     getCrypto(crypto) {
+        this.log(`Get cryptoInterface -> ${crypto}`);
         if (Functions.isNull(crypto)) {
             return Promise.reject(Error.errorResponse(Error.INVALID_DATA, {crypto: "crypto is not defined"}));
         } else {
@@ -558,6 +600,12 @@ export default class Wallet {
             });
     }
 
+    /**
+     * Get wallet addresses
+     * @param uid
+     * @param identifier
+     * @returns {Promise<any>}
+     */
     getWalletAddresses(uid, identifier) {
         const db = new Database();
 
@@ -565,7 +613,16 @@ export default class Wallet {
     }
 
 
-    _getWallets(uid, sanitize, identifier) {
+    /**
+     * Get wallets
+     * @param uid
+     * @param sanitize clean wallets if true
+     * @param identifier get a particular wallet
+     * @param returnBalance returns wallet balance if true
+     * @returns {Promise<any | never>}
+     * @private
+     */
+    _getWallets(uid, sanitize, identifier, returnBalance = true) {
         let data = {uid};
 
         if (identifier) {
@@ -579,6 +636,9 @@ export default class Wallet {
             })
             .then(wallets => {
                 if (wallets.length >= 0) {
+                    if (!returnBalance) {
+                        return Promise.resolve(wallets);
+                    }
                     //There are wallets
                     let promises = [];
                     for (let i = 0; i < wallets.length; i++) {
@@ -603,7 +663,7 @@ export default class Wallet {
                                 wallet.addresses = addresses;
                             })
                             .catch(reason => {
-                                wallet.balance = {confirmedBalance:0.0, unconfirmedBalance:0.0};
+                                wallet.balance = {confirmedBalance: 0.0, unconfirmedBalance: 0.0};
                                 wallet.addresses = [];
                             }).finally(() => {
                                 if (sanitize) {
@@ -639,6 +699,11 @@ export default class Wallet {
             });
     }
 
+    /**
+     * Get wallets and their balances
+     * @param uid
+     * @returns {*|PromiseLike<{status: boolean, code: number, message: *, data: *} | never>|Promise<{status: boolean, code: number, message: *, data: *} | never>|{}|void}
+     */
     getWallets(uid) {
         return this._getWallets(uid, true).then(value => {
             return Error.successError("Wallets", value);
@@ -715,7 +780,7 @@ export default class Wallet {
                 return mCrypto.createWalletAddress(cryptoBean);
             })
             .then(cryptoAddress => {
-                mCryptoAddres= cryptoAddress;
+                mCryptoAddres = cryptoAddress;
                 return db.insert(Wallet.address_table, {
                     uid,
                     crypto,
