@@ -206,6 +206,22 @@ router.get('/wallet/getWallets', function(req, res) {
         });
 });
 
+/**
+ * Get wallets
+ */
+router.get('/wallet/getTransactions', function(req, res) {
+    wallet.getTransactions(req.auth.uid)
+        .then(function(response) {
+            log(response);
+            res.send(response);
+        })
+        .catch(reason => {
+            log(reason, true);
+            res.send(reason);
+        });
+});
+
+
 
 /**
  * Get wallets
@@ -238,7 +254,7 @@ router.post('/wallet/sendTransaction', function(req, res) {
 });
 
 router.post('/wallet/confirmTransaction', function(req, res) {
-    wallet.confirmTransaction(req.auth.uid, req.bodyInt('otp'), req.bodyString("token"))
+    wallet.confirmTransaction(req.auth.uid, req.bodyString('otp'), req.bodyString("token"))
         .then(function(response) {
             log(response);
             res.send(response);
