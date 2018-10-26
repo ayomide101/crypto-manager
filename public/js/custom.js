@@ -379,7 +379,7 @@ dashBoard = function () {
                     const wallet = result.data[i];
 
                     let address = "";
-                    address = "<h4 class='nomargin text-left'>public addresses</h4>";
+                    address = "<h5 class='nomargin text-left'>Public Address - <i>Receive payments</i></h5>";
                     if (wallet["addresses"] !== undefined && wallet.addresses.length > 0) {
                         for (let j = 0; j < wallet.addresses.length; j++) {
                             console.log(wallet.addresses[i]);
@@ -397,13 +397,13 @@ dashBoard = function () {
                     let walletHTML = `<div class="col-md-6" style="padding: 5px;">
                                 <div class="card">
                                  <h4 class="nomargin text-left uppercase" style="overflow-wrap: break-word;"><a href="/wallet/${wallet.identifier}">${wallet.crypto_type}</a></h4>
-                                <h4 class="nomargin text-left" style="overflow-wrap: break-word;">id: ${wallet.identifier}</h4>
-                                <h4 class="nomargin text-left" style="overflow-wrap: break-word;">date:  ${new Date(Date.parse(wallet.created_on)).toDateString()}</h4>
+                                <h5 class="nomargin text-left" style="overflow-wrap: break-word;">ID: ${wallet.identifier}</h5>
+                                <h6 class="nomargin text-left" style="overflow-wrap: break-word;font-weight: normal;">date:  ${new Date(Date.parse(wallet.created_on)).toDateString()}</h6>
                                 <hr/>
                                 ${address}
                                 <hr/>
                                 <h4 class="nomargin text-right">confirmed: ${wallet.balance.confirmedBalance} ${getCurrency(wallet.crypto_type)}</h4>
-                                <h4 class="nomargin text-right">unconfirmed: ${wallet.balance.confirmedBalance} ${getCurrency(wallet.crypto_type)}</h4>
+                                <h4 class="nomargin text-right">unconfirmed: ${wallet.balance.unconfirmedBalance} ${getCurrency(wallet.crypto_type)}</h4>
                                 <button class="button button-rounded col_full fright nomargin" name="create-address" value="login">CREATE PUBLIC ADDRESS</button>
                                 
 </div>

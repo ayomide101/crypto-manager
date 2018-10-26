@@ -67,6 +67,7 @@ export default class StellarCrypto extends CryptoInterface {
      * @returns {*}
      */
     createWallet(name) {
+        this.log(`Creat wallet call received for staller`);
         if (Functions.isNull(name)) {
             return Promise.reject(this.error("wallet_name is not defined"));
         }
@@ -181,12 +182,16 @@ export default class StellarCrypto extends CryptoInterface {
 
                 return new Promise((resolve, reject) => {
 
-                    const transaction = new StellarSdk.TransactionBuilder(account)
-                        .addOperation(StellarSdk.Operation.payment({
-                            destination: receiver_wallet_address,
+                    const transactiondata =  {
+                        destination: receiver_wallet_address,
                             asset: StellarSdk.Asset.native(),
-                            amount: amount.toString()
-                        }))
+                        amount: amount+""
+                    };
+
+                    console.log(`Stellar transaction data -> ${JSON.stringify(transactiondata)}`);
+
+                    const transaction = new StellarSdk.TransactionBuilder(account)
+                        .addOperation(StellarSdk.Operation.payment(transactiondata))
                         .build();
 
                     this.log(`Signing transaction -> ${StellarCrypto.getName()}`);
@@ -452,10 +457,11 @@ export default class StellarCrypto extends CryptoInterface {
             return this.isWalletValid(cryptoBean.identifier)
                 .then(account => {
                     let balances = 0;
-                    for (let i = 0; i < account.balances; i++) {
-                        balances = account.balances[i].balance + balances;
+                    for (let i = 0; i < account.balances.length; i++) {
+                        balances = parseFloat(account.balances[i].balance) + balances;
                     }
 
+                    console.log(`Balance -> ${balances}`);
                     return Promise.resolve(new CryptoBalance(balances, 0));
                 })
                 .catch(reason => {

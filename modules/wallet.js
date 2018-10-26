@@ -150,6 +150,8 @@ export default class Wallet {
                             uid,
                             wallet_type, tokenSecret, crypto_address, amount, identifier } = transactions[0];
 
+                        console.log(`Database transaction data -> ${JSON.stringify(transactions[0])}`);
+
                         //Checking otp is valid
                         if (totp.check(otp, tokenSecret)) {
                             console.log('OTP was valid');
@@ -174,10 +176,12 @@ export default class Wallet {
                                 })
                                 .then(cryptoTransaction => {
                                     //Updating transaction
+                                    this.log(`Updating state of transaction`);
                                     db.update(Wallet.transaction_table, {hashToken: token}, {status:'finished'});
                                     return Promise.resolve(Error.successError("Transaction sent", cryptoTransaction));
                                 })
                                 .catch(reason => {
+                                    console.log(reason);
                                     if (reason === "Not enough money in wallet") {
                                         return Promise.reject(Error.NO_MONEY_IN_WALLET);
                                     }
@@ -193,6 +197,9 @@ export default class Wallet {
                             console.error('Incorrect OTP');
                             return Promise.reject(Error.INCORRECT_OTP);
                         }
+                    })
+                    .then(value => {
+                        resolve(value);
                     })
                     .catch(reason => {
                         console.log(reason);
@@ -216,10 +223,14 @@ export default class Wallet {
         //Token can be used to generate another OTP
         const hashToken = Functions.sha512(tokenSecret, Functions.genRandomString(16));
 
-        return db.insert(Wallet.transaction_table, {
+        let data = {
             uid, hashToken:hashToken.passwordHash, tokenSecret, created_on: new Date().toISOString(),
-            identifier, wallet_type, crypto_address, amount, status:"pending"
-        })
+            identifier, wallet_type, crypto_address, amount: parseFloat(amount), status:"pending"
+        };
+
+        this.log(`Transaction data -> ${JSON.stringify(data)}`);
+
+        return db.insert(Wallet.transaction_table, data)
             .then(value => {
                 this.sendOTPEmail(user, otp);
                 console.log(`OTP Generated -> ${hashToken.passwordHash}`);
