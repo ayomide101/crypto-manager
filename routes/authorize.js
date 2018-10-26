@@ -14,7 +14,7 @@ const user = new User();
  */
 router.post('/login/2fa', function (req, res) {
     user
-        .confirm2FA(req.bodyInt("otp"), req.bodyString("token"))
+        .confirm2FA(req.bodyString("otp"), req.bodyString("token"))
         .then(function (response) {
             res.send(response)
         }, function (err) {
