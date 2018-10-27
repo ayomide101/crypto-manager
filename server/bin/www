@@ -15,7 +15,8 @@ var fs = require("fs");
  * Get port from environment and store in Express.
  */
 var env = process.env.ENVIRONMENT || 'localhost'; //Define the environment in shell
-var port = normalizePort(process.env.PORT || env == 'production'? '80':'8080'); //Secure port on production
+var port = 8081; //Secure port on production
+// var port = normalizePort(process.env.PORT || env == 'production'? '80':'8080'); //Secure port on production
 
 
 app.set('port', port);
