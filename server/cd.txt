@@ -1,0 +1,238 @@
+Creating a wallet from -> cryptomanager-test-wallet
+<PrivateKey: ab4a3973c08d86eb353265a1ea4b27eaf5750acfc1060f8f78410ed675c3f324, network: livenet>
+L2xgAneH3AmG2nBRskNCXaPWER1G1rLFVWRsf4ZDiTqLGupJWg2P
+<Address: 1DLQ163stzqeUN88LcWjNEUYghhF57GwqU, type: pubkeyhash, network: livenet>
+<PublicKey: 032a74092c00f66bfb0167de907eef4f25d86b46472f8a33b9ccad5262b5336cd1>
+
+Creating a wallet from -> cryptomanager-test-wallet
+<PrivateKey: ab4a3973c08d86eb353265a1ea4b27eaf5750acfc1060f8f78410ed675c3f324, network: livenet>
+L2xgAneH3AmG2nBRskNCXaPWER1G1rLFVWRsf4ZDiTqLGupJWg2P
+<Address: 1DLQ163stzqeUN88LcWjNEUYghhF57GwqU, type: pubkeyhash, network: livenet>
+<PublicKey: 032a74092c00f66bfb0167de907eef4f25d86b46472f8a33b9ccad5262b5336cd1>
+
+
+
+
+LIVE
+cryptomanager-test-wallet-1
+
+PassPhrase
+8982bc6f69c2683640318b9107bdff26bf5a5924ca9cb56b9b7ee7f576585e7cb1152b305d56563768c0a764abfa408dbf440564bb0b76164fcf6f3dba7ce5c7
+
+Wallet {
+  sdk:
+   APIClient {
+     bitcoinCash: false,
+     regtest: false,
+     testnet: false,
+     network:
+      { messagePrefix: '\u0018Bitcoin Signed Message:\n',
+        bech32: 'bc',
+        bip32: [Object],
+        pubKeyHash: 0,
+        scriptHash: 5,
+        wif: 128 },
+     feeSanityCheck: true,
+     feeSanityCheckBaseFeeMultiplier: 200,
+     dataClient:
+      RestClient {
+        apiKey: '2982ad54afbf1837e2e18d704a732c27d22549f1',
+        apiSecret: '53dbd5fcb8bfb3498a0a4f8b8ab6c352755bf4e7',
+        https: true,
+        host: 'chain.api.btc.com',
+        port: 443,
+        endpoint: '/v3',
+        btccom: true,
+        throttleRequestsTimeout: 350,
+        throttleRequests: true,
+        nextRequest: null,
+        defaultParams: {} },
+     blocktrailClient:
+      RestClient {
+        apiKey: '2982ad54afbf1837e2e18d704a732c27d22549f1',
+        apiSecret: '53dbd5fcb8bfb3498a0a4f8b8ab6c352755bf4e7',
+        https: true,
+        host: 'api.blocktrail.com',
+        port: 443,
+        endpoint: '/v1/BTC',
+        btccom: false,
+        throttleRequestsTimeout: 0,
+        throttleRequests: false,
+        nextRequest: null,
+        defaultParams: [Object],
+        defaultHeaders: [Object] },
+     converter: BtccomConverter { network: [Object], useNewCashAddr: true } },
+  identifier: 'cryptomanager-test-wallet',
+  walletVersion: 'v3',
+  locked: false,
+  bypassNewAddressCheck: false,
+  bitcoinCash: false,
+  segwit: false,
+  useNewCashAddr: false,
+  testnet: false,
+  regtest: false,
+  network:
+   { messagePrefix: '\u0018Bitcoin Signed Message:\n',
+     bech32: 'bc',
+     bip32: { public: 76067358, private: 76066276 },
+     pubKeyHash: 0,
+     scriptHash: 5,
+     wif: 128 },
+  primaryMnemonic: null,
+  encryptedPrimarySeed: <Buffer 0a 21 b5 da b4 0f 27 02 21 a0 69 01 00 00 00 6c 31 42 99 ad cc 0c 9c de ea b6 c7 50 d5 c9 c5 40 29 78 12 53 fd 46 06 10 96 45 89 a5 5c a0 68 4b 21 a9 ... >,
+  encryptedSecret: <Buffer 0a 1f 37 f0 82 47 ce 3c da 07 4f b8 88 00 00 eb a5 36 a9 a1 99 97 f4 e7 80 96 b8 9b b3 84 34 ee 4d 73 50 14 aa 4c 3e 50 69 06 e2 2c 03 a7 56 02 81 8d ... >,
+  primaryPrivateKey:
+   HDNode {
+     keyPair:
+      ECPair {
+        d: [BigInteger],
+        compressed: true,
+        network: [Object],
+        __Q: [Point] },
+     chainCode: <Buffer 16 b0 7f 17 a1 1c 2c ba 9e 2b e9 41 c6 73 09 07 02 39 96 a5 52 55 21 99 03 7b 93 4d a4 22 12 25>,
+     depth: 0,
+     index: 0,
+     parentFingerprint: 0 },
+  backupPrivateKey: null,
+  backupPublicKey:
+   HDNode {
+     keyPair: ECPair { __Q: [Point], compressed: true, network: [Object] },
+     chainCode: <Buffer 44 3f 8c 94 89 da 93 bd f8 f3 3a f4 56 24 a7 e4 d6 ee 30 76 9b 1d c6 bc 37 c8 59 ff df a2 51 cd>,
+     depth: 0,
+     index: 0,
+     parentFingerprint: 0 },
+  blocktrailPublicKeys:
+   { '0':
+      HDNode {
+        keyPair: [ECPair],
+        chainCode: <Buffer 09 d3 c8 c1 86 61 91 77 50 1e 1f 67 ae f1 c0 99 ca e5 b3 85 62 03 37 81 00 24 a0 97 f3 22 dc 57>,
+        depth: 1,
+        index: 2147483648,
+        parentFingerprint: 500625266 },
+     '9999':
+      HDNode {
+        keyPair: [ECPair],
+        chainCode: <Buffer ca 42 02 85 74 f4 66 f4 bb 61 75 23 c2 78 f5 a1 e4 af 0a 9e d6 1e 1a aa c4 98 c0 4d 2a a7 f2 35>,
+        depth: 1,
+        index: 2147493647,
+        parentFingerprint: 3580289305 } },
+  primaryPublicKeys:
+   { keyIndex:
+      HDNode {
+        keyPair: [ECPair],
+        chainCode: <Buffer 72 e2 2d 2c 0f 81 d5 c7 d8 76 28 73 dd e6 c9 71 80 c1 b0 da 7c 8e fe 85 c8 60 ba d8 31 ec ea cd>,
+        depth: 1,
+        index: 2147483648,
+        parentFingerprint: 546729526 } },
+  keyIndex: 0,
+  chain: 0,
+  changeChain: 0,
+  checksum: '13yJqEb6ynNZ4FfWdjpsuku46ynTRG9e8j',
+  upgradeToKeyIndex: null,
+  secret: <Buffer c7 58 ee 2c b4 ce ac ec a0 b1 89 7c b0 e2 05 db f2 d0 64 d7 a9 68 0d f3 73 92 55 a0 f9 b6 3b 67>,
+  seedHex: null,
+  primarySeed: <Buffer d8 02 00 4d 01 ca fb e3 3e 4e 46 e0 dd e3 41 57 89 aa 78 d6 52 26 74 be 66 e2 d0 aa 35 de 4b 82> }
+{ walletVersion: 'v3',
+  encryptedPrimarySeed: 'library extra hope rely domain near ancient cross harbor amount abandon absorb seek pattern grit ridge arrive tragic rival horn insect helmet check pool city scene neutral whisper gather analyst flip raise pipe topic borrow north box motor acoustic jacket right type perfect vital stage cook ridge color prosper uphold bar half various hill purity treat enough when napkin wrap',
+  backupSeed: 'reflect wealth staff mom doll naive test save feel tent drip learn double true immune quantum child state decide daughter transfer pink just poverty',
+  recoveryEncryptedSecret: 'library father visual peace fluid lava pigeon hour solid session abandon ability shrug tumble swear crew carbon holiday defy focus catch since circle hidden festival sister coin trip piece wave correct blue antique exhibit skate together shop woman heart labor motor sock dinner often tent stage travel omit uphold frame yellow wrist pride proud pizza nice vault elder blanket jeans',
+  encryptedSecret: 'library extend social three caught train vibrant domain exile session abandon achieve ripple opera pledge creek obey poet then coin meadow supply awkward oven estate once ahead fee sentence choice piano sword clown brush stereo agree boat supply bitter rookie kangaroo race hint tent sister unable saddle journey then confirm awful slam mandate shaft rice reason home metal bunker demand',
+  blocktrailPublicKeys:
+   { '0':
+      HDNode {
+        keyPair: [ECPair],
+        chainCode: <Buffer 09 d3 c8 c1 86 61 91 77 50 1e 1f 67 ae f1 c0 99 ca e5 b3 85 62 03 37 81 00 24 a0 97 f3 22 dc 57>,
+        depth: 1,
+        index: 2147483648,
+        parentFingerprint: 500625266 },
+     '9999':
+      HDNode {
+        keyPair: [ECPair],
+        chainCode: <Buffer ca 42 02 85 74 f4 66 f4 bb 61 75 23 c2 78 f5 a1 e4 af 0a 9e d6 1e 1a aa c4 98 c0 4d 2a a7 f2 35>,
+        depth: 1,
+        index: 2147493647,
+        parentFingerprint: 3580289305 } } }
+
+
+
+
+--- TEST NET
+
+
+cryptomanager-test-wallet-1
+b23446729680878c2f053ecdec6c054a6d6fadda1b114784bbafe1ba64925a175248b4616acae9cec2bc00fb2e9948ee2caee18cc65d915d59851a13ed458878
+{ walletVersion: 'v3',
+  encryptedPrimarySeed: 'library few goat fly kick visit cup trip clown amount abandon about meat inside inside grass act foot sketch flag huge shell increase sunny health elite craft print smart token annual double baby offer island shiver remain digital annual panda crane provide sad kind street spell coil pretty reduce tourist buzz rebel cinnamon neglect exit iron fresh luxury prize marine',
+  backupSeed: 'nose laugh tent romance tell neutral cram miracle account glare adult judge section jar brother truck hundred sport kite situate service tomato audit feature',
+  recoveryEncryptedSecret: 'library fade invest put borrow kite awake goddess reward session abandon absent jungle trick winter banana pass permit mutual admit cup stem poverty chimney latin inside nose steel census thumb shed person nominee three buddy hold picnic earn security dumb lazy pride tackle motor edge clump sea board dose describe copper tenant pass will survey brave cinnamon pencil base bench',
+  encryptedSecret: 'library fever civil coffee letter bar hub aunt sausage session abandon absurd chunk shed black great stool olive jaguar acid barely shine page buddy system wage soap lemon quarter near kiwi original trophy smoke cloud bundle hip bean victory sound junk brown collect grocery marine sheriff course mystery tornado hospital nest title advice earth human there drastic average whale galaxy' }
+
+
+
+cryptomanager-test-wallet-2
+3fd90531fd42250700fbcb12b94fdab7c96f92967137c1ef20f682070945503e402f2a0b0437b9d0010d4932d16772bbd26ab4ad10b0beb6331c20c8c57b7029
+
+
+
+cryptomanager-test-wallet-3
+a57dcde80a0d9dce7f842ea108a4f368dbc6ba996d504a0e16c3fa097f6b1f9aa25a807075128bc1d401901b022bf1210da5722942691cfe6f12584ebdb6863a
+{ walletVersion: 'v3',
+  encryptedPrimarySeed: 'library fantasy luxury burden knock regret witness until poem amount abandon abstract mobile pig half predict belt today crumble supreme student erode crouch island banana loop shield mutual order idea roof uncle grit mention essence orbit liquid issue ordinary cupboard divert puppy short obscure fiscal sample conduct armed entry main final add leaf embody curve twenty brain noodle roast demand',
+  backupSeed: 'crew resist cake hood toss alley horse fortune surprise copper series issue kidney recycle then arm detect tumble speed size dove bomb cute embark',
+  recoveryEncryptedSecret: 'library female venue taxi woman enforce party smooth arrow session abandon absurd artwork prevent box control axis fossil anxiety cup fatigue surface depart success outdoor profit negative spend industry pupil member aim feature property weekend loan staff grab split salt little town vote unable spring beyond february dinner mask habit explain often model warrior uncover length staff hub spin bracket',
+  encryptedSecret: 'library family unfold symbol mass pitch proud pottery distance session abandon absorb shop fall write blush remember ethics bone crumble mixture used size obey left song toy move fragile good pumpkin endorse assist drive board dice expire people diary chapter satisfy face vendor client exercise fly grunt mammal solution head ecology title anxiety muffin pretty split initial fan project crane' }
+
+
+Send Crypto back to this address
+mv4rnyY3Su5gjcDNzbMLKBQkBicCtHUtFB
+
+
+New key pair created!
+ Account ID: GBLQUBAUR5JXPFSN3MCBU6TQUG2XPRFJPZJPEHOA2K44CC6OIKCOQPKK
+ Secret : SBKWDOG3NMN3IIU37B5QHEGCGJCAY2AXTV3ILPI36JGX4FKOT6OAGGIQ
+
+
+New key pair created!
+ Account ID: GC73RK7EOMQVYMZ3Q47O24CKHWMQW5SNPGVIWR2UHWZ2UCOPBKHSDT3B
+ Secret : SDOJRSLQFTENSRPEIJUPR2AYTPB4TZ34AXKMG2OHODRT7GJG7BNIQLJH
+
+
+
+
+ Account loaded -> GBLQUBAUR5JXPFSN3MCBU6TQUG2XPRFJPZJPEHOA2K44CC6OIKCOQPKK
+ { records:
+    [ { _links: [Object],
+        id: '1383542110031873',
+        paging_token: '1383542110031873',
+        source_account: 'GAIH3ULLFQ4DGSECF2AR555KZ4KNDGEKN4AFI4SU2M7B43MGK3QJZNSR',
+        type: 'create_account',
+        type_i: 0,
+        created_at: '2018-10-23T13:48:52Z',
+        transaction_hash: '32246621bff0131bca319d63b398e9ed47ae106e0f56eadd8ba5c401c85567c1',
+        starting_balance: '10000.0000000',
+        funder: 'GAIH3ULLFQ4DGSECF2AR555KZ4KNDGEKN4AFI4SU2M7B43MGK3QJZNSR',
+        account: 'GBLQUBAUR5JXPFSN3MCBU6TQUG2XPRFJPZJPEHOA2K44CC6OIKCOQPKK',
+        self: [Function],
+        transaction: [Function],
+        effects: [Function],
+        succeeds: [Function],
+        precedes: [Function] },
+      { _links: [Object],
+        id: '1384611556888577',
+        paging_token: '1384611556888577',
+        source_account: 'GBLQUBAUR5JXPFSN3MCBU6TQUG2XPRFJPZJPEHOA2K44CC6OIKCOQPKK',
+        type: 'payment',
+        type_i: 1,
+        created_at: '2018-10-23T14:09:41Z',
+        transaction_hash: 'ca598cca8c5244438e25cc465f7a383d2dbbe8de24a588f723f36b155d4020ef',
+        asset_type: 'native',
+        from: 'GBLQUBAUR5JXPFSN3MCBU6TQUG2XPRFJPZJPEHOA2K44CC6OIKCOQPKK',
+        to: 'GC73RK7EOMQVYMZ3Q47O24CKHWMQW5SNPGVIWR2UHWZ2UCOPBKHSDT3B',
+        amount: '500.0000000',
+        self: [Function],
+        transaction: [Function],
+        effects: [Function],
+        succeeds: [Function],
+        precedes: [Function] } ],
+   next: [Function: next],
+   prev: [Function: prev] }
