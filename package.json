@@ -7,31 +7,31 @@
     "test": "mocha -t 100000 --require babel-core/register --require test/support/env --reporter spec --bail --check-leaks test/"
   },
   "dependencies": {
-    "bitcore-lib": "^8.0.0",
-    "blocktrail-sdk": "^3.7.16",
-    "body-parser": "^1.18.3",
-    "compression": "^1.7.3",
+    "bitcore-lib": "^8.3.3",
+    "blocktrail-sdk": "^3.7.22",
+    "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
     "constants": "0.0.2",
-    "cookie-parser": "~1.4.3",
-    "debug": "^4.1.0",
-    "express": "^4.16.4",
+    "cookie-parser": "^1.4.4",
+    "debug": "^4.1.1",
+    "express": "^4.17.1",
     "express-jwt": "^5.3.1",
-    "express-session": "^1.15.6",
-    "helmet": "^3.5.0",
+    "express-session": "^1.16.1",
+    "helmet": "^3.18.0",
     "hjs": "~0.0.6",
-    "jsonwebtoken": "^8.3.0",
+    "jsonwebtoken": "^8.5.1",
     "morgan": "^1.9.1",
-    "mysql": "^2.16.0",
-    "nodemailer": "^4.6.8",
-    "otplib": "^10.0.1",
-    "quick-encrypt": "^1.0.7",
+    "mysql": "^2.17.1",
+    "nodemailer": "^4.7.0",
+    "otplib": "^10.2.3",
+    "quick-encrypt": "^1.0.8",
     "sanitize": "^2.1.0",
     "serve-favicon": "^2.5.0",
     "stellar-sdk": "^0.11.0",
     "twitter": "~1.7.0",
     "uuid": "^3.3.2",
-    "validator": "^10.8.0",
-    "wallet-address-validator": "^0.2.1"
+    "validator": "^10.11.0",
+    "wallet-address-validator": "^0.2.4"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -40,6 +40,6 @@
     "babel-preset-stage-2": "^6.24.1",
     "chai": "^4.2.0",
     "mocha": "^5.2.0",
-    "nock": "^10.0.1"
+    "nock": "^10.0.6"
   }
 }
