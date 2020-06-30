@@ -15,7 +15,7 @@
     "cookie-parser": "^1.4.4",
     "debug": "^4.1.1",
     "express": "^4.17.1",
-    "express-jwt": "^5.3.1",
+    "express-jwt": "^6.0.0",
     "express-session": "^1.16.1",
     "helmet": "^3.18.0",
     "hjs": "~0.0.6",
